@@ -39,7 +39,9 @@ export function SiteFooter() {
               alt="Dentsu Data Artist Mongol"
               width={520}
               height={209}
-              className="h-[38px] w-auto self-start"
+              // Larger than the header's: the footer has the room, and this is
+              // where the lock-up is meant to be read rather than glanced at.
+              className="h-[56px] w-auto self-start"
             />
             <address className="max-w-[300px] text-sm leading-[1.74] text-dim not-italic">
               {CORPORATE.legalName}

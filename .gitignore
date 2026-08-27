@@ -60,6 +60,13 @@ docs/
 # Stray full-size canvas export (63 MB). Kept locally, not in the repo.
 design/global.png
 
-# Rotating-globe source (12 MB, 1800x1080). The scrubbed 1440p/24fps
-# derivative in public/video is what ships; see README for the recipe.
+# Rotating-globe source (11 MB, 1800x1080, 30 fps). The scrub-friendly
+# 1800x1080/24fps derivative in public/video is what ships; see README
+# for the recipe. Only re-encoding needs this file — the site does not.
 Earth.mp4
+
+# Tree-growth source frames (8 MB of 1024px PNGs, six with alpha plus a
+# seventh rendered on black). The WebP set in public/img/preloader is what
+# ships — 500px for the moving stages, 1024px for the one that comes to
+# rest; see README for the recipe and why the black render matters.
+preloading/

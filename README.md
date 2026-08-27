@@ -175,6 +175,102 @@ ffmpeg -i Earth.mp4 -vf "select=eq(n\,0)" -frames:v 1 -q:v 3 public/img/earth-gl
 If the frame rate changes, `FPS` in `scroll-video.tsx` must change with it —
 seeks are quantised to that grid.
 
+### The opening scene
+
+`preloading/` (6.9 MB of 1024px RGBA PNGs) stays local — see `.gitignore`.
+What ships is `public/img/preloader/tree-0{1..6}.webp`, 456 KB for the set:
+
+```
+cwebp -q 80 -alpha_q 60 -resize 500 500 -m 6 -sns 90 tree-growth-0N-*.png -o tree-0N.webp
+
+# stage 6 comes from the BLACK-background render and is handled differently
+ffmpeg -i tree-growth-06-full-growth-black.png \
+  -vf "scale=760:760,lutrgb=r='min(val+7,255)':g='min(val+9,255)':b='min(val+15,255)'" \
+  -frames:v 1 lift.png
+cwebp -q 84 -m 6 -sns 90 lift.png -o tree-06.webp
+```
+
+There are **seven** stages. 6 and 7 are the same artwork at the same rendered
+size — 6 the transparent render, 7 the one on black — so the final step is a
+dissolve that resolves into focus rather than a movement.
+
+Stages 1-6 are motion and nobody studies them. Stage 7 stops and stays while
+the reader reads the statement and scrolls, so it gets two things the others
+do not.
+
+**Resolution.** The frames are scaled 0.40 to 1.50, so at 1.50 in a 380px box
+it paints at 570 CSS px — 1140 device pixels at DPR 2. It is encoded at the
+source's native 1024, as close as the source allows; at 500px it was a 2.3x
+upscale and the foliage visibly mushed.
+
+**No alpha.** This is the interesting one. In the transparent artwork the leaf
+structure is carried by the *alpha* channel: the canopy is speckled coverage,
+averaging 0.40 across values from 0 to 1. Lossy alpha compression destroys
+exactly that, which is what made the resting tree look unclear. The
+black-background render puts the same structure in RGB, where WebP is far
+better tuned — and there is no alpha channel to pay for. It is both sharper and
+smaller: 101 KB against 207 KB.
+
+The `lutrgb` step lifts pure black to the page's ground colour. The art is
+additive glow on black, so adding #07090F lands the background exactly on the
+page and lifts the tree by an imperceptible 3%. The risk with an opaque frame
+is that a drifting encode shows it as a rectangle, so it was measured: inside
+versus outside the box differs by 0.8 of one level. Re-encode lower than q84
+and re-check that before shipping.
+
+If black-background renders of stages 1-6 ever turn up, the same treatment
+would make the whole set sharper and smaller.
+
+The scale ladder is `0.40 / 0.72 / 0.97 / 1.07 / 1.26 / 1.50 / 1.50` on
+`.intro-frame:nth-child(n)`. Those middle values are uneven on purpose: each is
+solved against the blob height the artwork already has at that stage, so what
+the eye sees — rendered blob height — climbs in even steps (55, 96, 137, 178,
+219, 260 of 256-space). All seven share a ground line at 79% down the box,
+which is why `transform-origin` is there: the tree grows up out of fixed soil
+instead of swelling from its middle. Verified identical to the pixel across all
+seven stages.
+
+The alpha is the whole cost here. Flattening the frames onto `--color-ink`
+is four times smaller, but lossy WebP drifts a flat near-black by a level or
+two and each frame then reads as a faintly lighter rectangle over the ground.
+Keeping transparency avoids it; `-alpha_q 60` keeps that affordable. Do not
+drop below roughly `-q 80` — the halo contours into visible bands, and banding
+on near-black is the most obvious artifact there is.
+
+Only `tree-01.webp` (26 KB) is needed at 0 ms. The rest have up to 1.3 s of
+lead time, which is why the set is not a sprite sheet: staged arrival is a
+feature, and a single sheet would be all-or-nothing.
+
+The scene is 100svh at the top of the **home page only**, and it does not
+dismiss itself — the reader scrolls past it. Every number it needs lives in one
+`:root` block in globals.css (`--logo-h`, `--intro-scale`, `--intro-cx/cy`,
+`--intro-fly`, and the four durations).
+
+The logo in the scene is **the header's own logo**, flown out and scaled up,
+not a copy. That is the whole trick: its landing state is `transform: none`,
+the slot it already occupies, so the arrival cannot drift — measured dx/dy/dh
+are all 0.0 against the same logo on a page with no scene. A separate intro
+logo would need handing off to the real one at exactly the right pixel, and the
+handoff is what always looks wrong. `transform-origin: 0 50%` is what makes the
+maths trivial: `scale()` holds the left edge and the vertical centre still, so
+the translate is just "where I want them" minus "where they already are".
+
+The logo fills like a vessel because it is drawn as a `mask-image` of the PNG
+over a rising white block, not as an `<img>`. Every opaque pixel of the source
+is white (242-255 greyscale, checked), so the filled state is pixel-identical
+to the PNG — which is what every other page shows, since only
+`body:has(.intro)` empties it.
+
+Nothing here needs JavaScript, deliberately: a scene that gates the whole site
+behind a script is one that can strand a reader on a blank page.
+
+Two consequences worth knowing. There is no scroll lock, because CSS cannot
+release one — scrolling during the fill just skips it, and the "Scroll" cue is
+timed to appear when the fill completes rather than gating anything. And
+chapter 00 now sits below the scene, so its reveals had to move from
+time-based to the section's own view timeline; a load-time animation would be
+long over before the reader arrived.
+
 The logo is still raster only. A vector logo is needed before launch; a 520px
 PNG in the header will not hold up at 4K.
 
