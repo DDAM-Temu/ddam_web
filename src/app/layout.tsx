@@ -31,14 +31,12 @@ export const metadata: Metadata = {
     default: "Dentsu Data Artist Mongol — Intelligence, engineered in Ulaanbaatar",
     template: "%s — Dentsu Data Artist Mongol",
   },
-  description:
-    "157 specialists in AI development, data engineering and digital marketing — building production systems for Dentsu Digital and its clients in Japan and across APAC.",
+  description: `${CORPORATE.headcount} specialists in AI development, data engineering and digital marketing — building production systems for Dentsu Digital and its clients in Japan and across APAC.`,
   openGraph: {
     type: "website",
     siteName: CORPORATE.legalName,
     title: "Intelligence, engineered in Ulaanbaatar",
-    description:
-      "157 specialists in AI development, data engineering and digital marketing, backed by dentsu.",
+    description: `${CORPORATE.headcount} specialists in AI development, data engineering and digital marketing, backed by dentsu.`,
   },
   robots: { index: true, follow: true },
 };

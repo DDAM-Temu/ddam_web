@@ -21,11 +21,47 @@ export const CORPORATE = {
   email: "ddam@group.data-artist.com",
   founded: "2018",
   headcount: 157,
-  social: {
-    facebook: "https://facebook.com/DDAMongol",
-    linkedin: "https://linkedin.com/company/ddam",
-  },
 } as const;
+
+/**
+ * The official accounts, given by the client on 2026-08-27.
+ *
+ * Two corrections are baked in here, so do not "restore" either from the old
+ * site. The live ddam.ai footer links `linkedin.com/company/ddam`, which is not
+ * the company page; and there are two Instagram accounts, which that footer
+ * does not mention at all.
+ *
+ * Each is identified by `handle` rather than by a role, because which of the two
+ * Instagram accounts is the corporate one and which is the AI one is not
+ * documented anywhere we can cite — and the handle tells a reader apart from a
+ * second identical glyph without us inventing a label for it.
+ */
+export const SOCIAL = [
+  {
+    network: "Instagram",
+    handle: "@dentsu.data.artist.mongol",
+    href: "https://www.instagram.com/dentsu.data.artist.mongol/",
+    icon: "instagram",
+  },
+  {
+    network: "Instagram",
+    handle: "@dentsu.ai.mongol",
+    href: "https://www.instagram.com/dentsu.ai.mongol/",
+    icon: "instagram",
+  },
+  {
+    network: "Facebook",
+    handle: "@DDAMongol",
+    href: "https://www.facebook.com/DDAMongol",
+    icon: "facebook",
+  },
+  {
+    network: "LinkedIn",
+    handle: "Dentsu Data Artist Mongol LLC",
+    href: "https://www.linkedin.com/company/dentsu-data-artist-mongol-llc/",
+    icon: "linkedin",
+  },
+] as const;
 
 /** Timesheet Member Workload export, 2026-08-25 — 161 rows less 4 system accounts. */
 export const DIVISIONS = [
@@ -36,6 +72,42 @@ export const DIVISIONS = [
   { name: "Operation", count: 11 },
   { name: "Headquarters", count: 3 },
 ] as const;
+
+/**
+ * Small-number words, so prose can say "six divisions" and still be derived
+ * from DIVISIONS rather than typed out. A headcount or a division count in
+ * hand-written copy is a fact that goes stale silently — the number belongs in
+ * one place and nowhere else.
+ */
+const NUMBER_WORDS = [
+  "zero", "one", "two", "three", "four", "five",
+  "six", "seven", "eight", "nine", "ten",
+] as const;
+
+export const DIVISION_COUNT_WORD: string =
+  NUMBER_WORDS[DIVISIONS.length] ?? String(DIVISIONS.length);
+
+/**
+ * The official vision, supplied by the client on 2026-08-27.
+ *
+ * The wording is theirs and is left alone: "Solution" is singular, and the
+ * mid-sentence capitals (Society, Business, Opportunities, Members) are as
+ * given — this reads as deliberate, and "Solution" is also the name of a
+ * division. The one edit is the apostrophe in "clients' Business", which the
+ * source was missing.
+ *
+ * `audience` is NOT part of the statement. It is the noun each clause is
+ * already about, lifted out so the three read as three audiences — society,
+ * clients, staff — rather than as three similar sentences.
+ */
+export const VISION = {
+  statement: "Always to create high value",
+  commitments: [
+    { audience: "Society", clause: "by leading AI implementation in Society" },
+    { audience: "Our clients", clause: "by bringing Solution to our clients' Business" },
+    { audience: "Our members", clause: "by providing Opportunities to our Members" },
+  ],
+} as const;
 
 export const SERVICES = [
   {
@@ -85,7 +157,7 @@ export const GROUP_CHAIN = [
     // DDAM is the subject of the page, so it carries the accent — not the parent.
     name: "DDAM",
     role: "Delivery centre",
-    note: "157 specialists in Ulaanbaatar covering AI, data, platform operations and digital marketing.",
+    note: `${CORPORATE.headcount} specialists in Ulaanbaatar covering AI, data, platform operations and digital marketing.`,
     accent: true,
   },
 ] as const;

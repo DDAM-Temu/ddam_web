@@ -33,8 +33,8 @@ Tokens live in the `@theme` block at the top of `src/app/globals.css`.
 
 ## Motion
 
-All of it is CSS. There is no animation JavaScript, no observer, no
-library — the page ships zero client components.
+Almost all of it is CSS — no animation library, and every effect either
+composited or scroll-driven. There is exactly one exception, below.
 
 - Reveals and bar growth use anonymous `animation-timeline: view()`, wrapped in
   `@supports` so browsers without scroll-driven animations simply show the
@@ -45,7 +45,16 @@ library — the page ships zero client components.
   opens on the newest poster and walks backwards through time as you descend.
   Below 768px it becomes a swipeable, snapping scroller instead — the track is
   ~7x the viewport there, and scroll-linking it makes it fly.
-- Everything is guarded by `prefers-reduced-motion: reduce`.
+- The chapter 03 globe is a video scrubbed by scroll position — down the page
+  runs it forward, up runs it backward. This is the one effect that cannot be
+  CSS: a scroll timeline needs an animatable property, and there is none behind
+  `HTMLMediaElement.currentTime`. `src/components/scroll-video.tsx` carries the
+  reasoning; the short version is that the encode matters more than the loop
+  does, and the encode recipe is under Assets below.
+- Everything is guarded by `prefers-reduced-motion: reduce`. The globe opts out
+  further — reduced motion, data saver, and anything under 768px keep the
+  poster frame, which is the video's own frame 0, so the composition is
+  identical either way.
 
 ### Named timelines, and why they are not optional
 
@@ -136,6 +145,35 @@ discovery notes, which are kept out of this repo.
 
 - `DDAM-posters/` — 562 MB of print-resolution artwork.
 - `DDAM-GIRLS-2026/` — employee photography with no recorded usage consent.
+
+### The chapter 03 globe
+
+`Earth.mp4` (12 MB, 1800x1080, 30 fps) stays local — see `.gitignore`. What
+ships is `public/video/earth-globe.mp4`, 4.8 MB:
+
+```
+ffmpeg -i Earth.mp4 -an -vf "fps=24" \
+  -c:v libx264 -profile:v high -level 4.2 -preset veryslow -crf 26 \
+  -g 3 -keyint_min 3 -sc_threshold 0 -pix_fmt yuv420p -movflags +faststart \
+  public/video/earth-globe.mp4
+```
+
+`-g 3` is the whole trick, and it is not an optimisation. A seek decodes from
+the preceding keyframe, so at the source's ~1s GOP an arbitrary scrub costs up
+to 30 frames of decode and the globe visibly lags the wheel. At a 3-frame GOP
+every seek measures 8-32 ms, backward as cheap as forward, which is what makes
+scrolling up work at all. It costs roughly 2x the bitrate of a normal GOP.
+
+Resolution is native and deliberate: the section is full-bleed, so on a 1440px
+DPR-2 display it occupies 2880 device pixels and even 1800 is an upscale.
+Encoding narrower reads as blurry. The poster is frame 0 at the same width:
+
+```
+ffmpeg -i Earth.mp4 -vf "select=eq(n\,0)" -frames:v 1 -q:v 3 public/img/earth-globe.jpg
+```
+
+If the frame rate changes, `FPS` in `scroll-video.tsx` must change with it —
+seeks are quantised to that grid.
 
 The logo is still raster only. A vector logo is needed before launch; a 520px
 PNG in the header will not hold up at 4K.

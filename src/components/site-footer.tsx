@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CORPORATE, SERVICES } from "@/lib/content";
+import { SOCIAL_ICONS } from "@/components/icons";
+import { CORPORATE, SERVICES, SOCIAL } from "@/lib/content";
 
 const COLUMNS = [
   {
@@ -57,6 +58,26 @@ export function SiteFooter() {
                 {CORPORATE.email}
               </a>
             </address>
+
+            {/* Two of the four are Instagram, so the glyph alone cannot tell
+                them apart — the handle carries the accessible name and the
+                tooltip. The contact page lists them with the handle visible. */}
+            <ul className="flex items-center gap-[18px]">
+              {SOCIAL.map((account) => (
+                <li key={account.href}>
+                  <a
+                    href={account.href}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    aria-label={`${account.network} — ${account.handle}`}
+                    title={`${account.network} — ${account.handle}`}
+                    className="block text-dim transition-colors hover:text-paper"
+                  >
+                    {SOCIAL_ICONS[account.icon]}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {COLUMNS.map((col) => (

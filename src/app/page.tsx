@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Aura, ChapterLabel, ScrollRail, TaglineMarquee } from "@/components/narrative";
 import { PosterRail } from "@/components/poster-rail";
+import { ScrollScrubVideo } from "@/components/scroll-video";
+import { CountUp } from "@/components/count-up";
 import { ArrowRight, SERVICE_ICONS } from "@/components/icons";
 import { CORPORATE, DIVISIONS, GROUP_CHAIN, PLATFORM_PARTNERS, SERVICES } from "@/lib/content";
 
@@ -70,8 +72,13 @@ export default function Home() {
         <div className="mx-auto grid max-w-[1248px] gap-14 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-24">
           <div className="hold flex flex-col gap-[22px]">
             <ChapterLabel number="01" title="The company" />
+            {/* Deliberately carries no headcount. The number is a fact that
+                moves, it is already stated in the hero and counted out in the
+                panel beside this — both from CORPORATE.headcount — and a
+                spelled-out "a hundred and fifty-seven" in a headline is the one
+                copy of it that no one remembers to update. */}
             <h2 className="font-display text-[length:var(--text-chapter)] leading-[1.06] font-light tracking-[-0.024em] text-balance text-chalk">
-              A hundred and fifty-seven people, in six divisions.
+              Every discipline, in one building.
             </h2>
             <p className="text-[16.5px] leading-[1.74] text-pretty text-soft">
               Not a sales office with delivery somewhere else. The engineers, the analysts and the
@@ -107,11 +114,14 @@ export default function Home() {
               </dl>
             </div>
 
+            {/* Only the headcount counts up. A four is over before it is seen,
+                and a founding year is not a quantity — counting to 2018 would
+                be motion for its own sake. */}
             <dl className="rv grid grid-cols-3 border-t border-white/10">
               {[
-                { value: CORPORATE.headcount, label: "Specialists" },
-                { value: SERVICES.length, label: "Service lines" },
-                { value: CORPORATE.founded, label: "Founded" },
+                { value: CORPORATE.headcount, label: "Specialists", counts: true },
+                { value: SERVICES.length, label: "Service lines", counts: false },
+                { value: CORPORATE.founded, label: "Founded", counts: false },
               ].map((stat, i) => (
                 <div
                   key={stat.label}
@@ -120,7 +130,7 @@ export default function Home() {
                   }`}
                 >
                   <dd className="pop font-display text-[length:var(--text-chapter)] leading-none font-light tracking-[-0.02em] text-chalk">
-                    {stat.value}
+                    {stat.counts ? <CountUp value={CORPORATE.headcount} /> : stat.value}
                   </dd>
                   <dt className="font-mono text-[10.5px] tracking-[0.2em] text-faint uppercase">
                     {stat.label}
@@ -175,8 +185,21 @@ export default function Home() {
            The globe is composed with its subject on the right and open space
            on the left, so it runs full-bleed and dissolves leftward into the
            ground colour under the copy. Below lg the copy cannot sit on top of
-           it legibly, so the globe drops into its own band underneath. */}
-      <section className="clip-scope relative overflow-hidden border-t border-white/10 bg-ink-deep">
+           it legibly, so the globe drops into its own band underneath.
+
+           The globe turns with the scroll — forward down the page, backward up
+           it — which is the one effect here that needs scripting; see
+           ScrollScrubVideo. Its poster is the video's own first frame, so the
+           readers who never get the video (reduced motion, data saver, phones,
+           no JS) get the composition unchanged rather than a substitute.
+
+           `min-h` on lg is the globe's, not the copy's: at the height the copy
+           alone gives, `object-cover` has to scale a 16:9.6 frame to a ~2:1
+           section and the globe is cropped top and bottom. The extra room lets
+           it sit whole, and drops the upscale enough to stop it reading soft.
+           `.zoom` is deliberately absent for the same reason — it magnified an
+           already-upscaled frame, and the scrub is the motion here. */}
+      <section className="clip-scope relative overflow-hidden border-t border-white/10 bg-ink-deep lg:flex lg:min-h-[820px] lg:items-center">
         <div className="relative z-10 flex flex-col gap-[26px] px-[var(--gutter)] pt-32 pb-16 lg:max-w-[54%] lg:pb-32">
           <ChapterLabel number="03" title="The geography" />
           <h2 className="rv font-display text-[length:var(--text-scene)] leading-[1.04] font-light tracking-[-0.026em] text-balance text-chalk">
@@ -201,12 +224,10 @@ export default function Home() {
         </div>
 
         <div className="relative aspect-[16/10] w-full lg:absolute lg:inset-0 lg:aspect-auto lg:h-full">
-          <Image
-            src="/img/geography-globe.jpg"
-            alt="A globe showing network connections between Ulaanbaatar, Japan, APAC and EMEA"
-            fill
-            sizes="100vw"
-            className="zoom object-cover object-[62%_50%] lg:object-[right_center]"
+          <ScrollScrubVideo
+            src="/video/earth-globe.mp4"
+            poster="/img/earth-globe.jpg"
+            className="absolute inset-0 h-full w-full object-cover object-[62%_50%] lg:object-[right_center]"
           />
           {/* the leftward fade — opaque under the copy, clear over the globe */}
           <div

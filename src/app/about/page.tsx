@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { AwaitingContent, PageHeader } from "@/components/page-header";
 import { ChapterLabel } from "@/components/narrative";
-import { CORPORATE, DIVISIONS, GROUP_CHAIN } from "@/lib/content";
+import { CORPORATE, DIVISIONS, GROUP_CHAIN, VISION } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Dentsu Data Artist Mongol is a 157-person delivery centre in Ulaanbaatar, inside the dentsu network.",
+    `Dentsu Data Artist Mongol is a ${CORPORATE.headcount}-person delivery centre in Ulaanbaatar, inside the dentsu network.`,
 };
 
 const PEAK = Math.max(...DIVISIONS.map((d) => d.count));
@@ -28,16 +28,40 @@ export default function AboutPage() {
       <PageHeader
         number="01"
         eyebrow="The company"
-        title="A hundred and fifty-seven people, in six divisions."
+        title="Every discipline, in one building."
         intro="Not a sales office with delivery somewhere else. The engineers, the analysts and the operators are all in the same building in Ulaanbaatar."
       />
 
       <section id="vision" className="border-b border-white/10 px-[var(--gutter)] py-24">
         <div className="mx-auto flex max-w-[1248px] flex-col gap-10">
           <ChapterLabel number="01" title="Vision, mission and values" />
+
+          <h2 className="rv max-w-[900px] font-display text-[length:var(--text-scene)] leading-[1.04] font-light tracking-[-0.026em] text-balance text-chalk">
+            {VISION.statement}
+          </h2>
+
+          {/* The statement names three audiences, so it is set as three rather
+              than as a paragraph of near-identical clauses. The mono label is
+              lifted out of each clause, not added to it. */}
+          <ul className="rv grid gap-4 sm:grid-cols-3">
+            {VISION.commitments.map((commitment) => (
+              <li
+                key={commitment.audience}
+                className="flex flex-col gap-4 border border-white/10 bg-ink-card px-8 pt-7 pb-8"
+              >
+                <span className="font-mono text-[11px] tracking-[0.18em] text-accent uppercase">
+                  {commitment.audience}
+                </span>
+                <p className="text-[16.5px] leading-[1.68] text-pretty text-paper">
+                  {commitment.clause}
+                </p>
+              </li>
+            ))}
+          </ul>
+
+          {/* Vision is supplied; the rest of this section is not. */}
           <AwaitingContent
             items={[
-              "Vision statement",
               "Mission statement",
               "Company values",
               "“The most comfortable office in Ulaanbaatar” — copy and office photography",
