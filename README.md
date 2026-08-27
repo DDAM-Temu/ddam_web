@@ -75,11 +75,20 @@ sourced:
 - Address, phone, email, founding year — the live ddam.ai contact and about
   pages.
 - Brand hex values — `ddam-logo/180808DDAM-Logo-1-1.pdf`.
-- News items — the 2023–2026 poster archive. `NEWS` sorts on `date`, so the
-  rail and the feed always run newest-first regardless of declaration order.
-  The lightbox images in `public/img/posters/` are 1200px-wide renders of the
-  archive originals (Panasonic rasterised from its 200 MB PDF); each was
-  matched to its source by image comparison, not by filename.
+- News items — nine posters from the Ignition of Curiosity series and the
+  company events around it. `NEWS` sorts on `date`, so the rail and the feed
+  always run newest-first regardless of declaration order.
+
+  **Every date is read off the poster artwork, not the filename.** Three
+  filenames disagree with their own poster: the Jun 2024 file says 25 Jun
+  against a 27–28 Jun poster, the Aug 2024 file says 14 Aug against 15–16 Aug,
+  and the Sep 2024 file says 28 Sep against 30 Sep. The Japan–Mongolia Student
+  Forum poster carries no date at all; 2025.02.22 came from the client.
+
+  `public/img/news/` holds the 520px cards and `public/img/posters/` the
+  1200px lightbox renders. Sources are A-series (0.707), which is why the card
+  aspect `520/735` shows each poster whole rather than cropping it. The
+  Ideathon poster was rasterised from its PDF via `sips`.
 
 Sections the PRD requires but for which no copy exists yet render an
 `AwaitingContent` block listing what is outstanding. **No placeholder prose is

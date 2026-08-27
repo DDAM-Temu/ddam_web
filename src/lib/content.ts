@@ -79,13 +79,14 @@ export const GROUP_CHAIN = [
     name: "Dentsu Digital",
     role: "Parent company",
     note: "Japan's leading digital marketing company. We build and operate alongside their teams every day, not at arm's length.",
-    accent: true,
+    accent: false,
   },
   {
+    // DDAM is the subject of the page, so it carries the accent — not the parent.
     name: "DDAM",
     role: "Delivery centre",
     note: "157 specialists in Ulaanbaatar covering AI, data, platform operations and digital marketing.",
-    accent: false,
+    accent: true,
   },
 ] as const;
 
@@ -126,29 +127,39 @@ export type NewsItem = {
 };
 
 /**
- * From the poster archive. Partners are named only where the archive names
- * them. Declared newest-first for readability; `NEWS` below sorts on `date`
- * so the order cannot drift from the data.
+ * The Ignition of Curiosity series and the company events around it.
+ *
+ * Every date below is the one printed on the poster artwork itself, not the
+ * filename — several filenames disagree with their own poster (the Jun 2024
+ * file is dated 25 Jun but the poster reads 27–28 Jun; the Aug 2024 file reads
+ * 14 Aug against a 15–16 Aug poster; the Sep 2024 file reads 28 Sep against a
+ * 30 Sep poster). Titles are the posters' own display titles.
+ *
+ * The one exception is the Japan–Mongolia Student Forum, whose poster carries
+ * no date; 2025.02.22 was supplied by the client.
+ *
+ * Declared newest-first for readability; `NEWS` sorts on `date` so the order
+ * cannot drift from the data.
  */
 const NEWS_SOURCE: NewsItem[] = [
-  { date: "2025.12.29", kind: "Event", title: "New Year 2026",
-    image: "/img/news-ny2026.jpg",    poster: "/img/posters/ny2026.jpg",    posterWidth: 1200, posterHeight: 1692 },
-  { date: "2025.12.27", kind: "IoC",   title: "Ignition of Curiosity — Amplifi",
-    image: "/img/news-amplify.jpg",   poster: "/img/posters/amplify.jpg",   posterWidth: 1200, posterHeight: 1699 },
-  { date: "2025.12.22", kind: "IoC",   title: "Ignition of Curiosity",
-    image: "/img/news-mse.jpg",       poster: "/img/posters/mse.jpg",       posterWidth: 1200, posterHeight: 1697 },
-  { date: "2025.12.17", kind: "IoC",   title: "Ignition of Curiosity",
-    image: "/img/news-6mk.jpg",       poster: "/img/posters/6mk.jpg",       posterWidth: 1200, posterHeight: 1700 },
-  { date: "2025.10.20", kind: "IoC",   title: "Ignition of Curiosity — Panasonic",
-    image: "/img/news-panasonic.jpg", poster: "/img/posters/panasonic.jpg", posterWidth: 1200, posterHeight: 1697 },
+  { date: "2025.12.27", kind: "IoC",   title: "Beyond Intelligence — Connected Minds, Global Impact",
+    image: "/img/news/beyond-intelligence-2025.jpg",   poster: "/img/posters/beyond-intelligence-2025.jpg",   posterWidth: 1200, posterHeight: 1699 },
   { date: "2025.09.21", kind: "Event", title: "AI Business Ideathon 2025",
-    image: "/img/news-ideathon.jpg",  poster: "/img/posters/ideathon.jpg",  posterWidth: 495,  posterHeight: 800 },
-  { date: "2025.08.15", kind: "Event", title: "E-Sport Cup 2025",
-    image: "/img/news-esport.jpg",    poster: "/img/posters/esport.jpg",    posterWidth: 1200, posterHeight: 1697 },
-  { date: "2025.07.28", kind: "IoC",   title: "Ignition of Curiosity — AWS",
-    image: "/img/news-aws.jpg",       poster: "/img/posters/aws.jpg",       posterWidth: 1200, posterHeight: 1697 },
-  { date: "2025.05.21", kind: "IoC",   title: "Ignition of Curiosity — Creative × AI",
-    image: "/img/news-creative.jpg",  poster: "/img/posters/creative.jpg",  posterWidth: 842,  posterHeight: 1190 },
+    image: "/img/news/ideathon-2025.jpg",              poster: "/img/posters/ideathon-2025.jpg",              posterWidth: 1200, posterHeight: 1697 },
+  { date: "2025.07.28", kind: "IoC",   title: "Connected Intelligence — Global Collaboration Transforming Tomorrow",
+    image: "/img/news/connected-intelligence-2025.jpg", poster: "/img/posters/connected-intelligence-2025.jpg", posterWidth: 1200, posterHeight: 1697 },
+  { date: "2025.05.21", kind: "IoC",   title: "Creative × AI — Inspired by people. Powered by AI.",
+    image: "/img/news/creative-ai-2025.jpg",           poster: "/img/posters/creative-ai-2025.jpg",           posterWidth: 842,  posterHeight: 1190 },
+  { date: "2025.02.22", kind: "Event", title: "3rd Japan–Mongolia Student Forum",
+    image: "/img/news/student-forum-2025.jpg",         poster: "/img/posters/student-forum-2025.jpg",         posterWidth: 1200, posterHeight: 1698 },
+  { date: "2024.09.30", kind: "IoC",   title: "Commerce AI",
+    image: "/img/news/commerce-ai-2024.jpg",           poster: "/img/posters/commerce-ai-2024.jpg",           posterWidth: 841,  posterHeight: 1190 },
+  { date: "2024.08.15", kind: "IoC",   title: "Play Your Life — Incubation of Concept with GDO",
+    image: "/img/news/gdo-2024.jpg",                   poster: "/img/posters/gdo-2024.jpg",                   posterWidth: 1200, posterHeight: 1693 },
+  { date: "2024.07.04", kind: "Event", title: "Town Hall Meeting — 8th Year Anniversary",
+    image: "/img/news/town-hall-2024.jpg",             poster: "/img/posters/town-hall-2024.jpg",             posterWidth: 1200, posterHeight: 1697 },
+  { date: "2024.06.27", kind: "IoC",   title: "Collaboration — Big Tech & Dentsu",
+    image: "/img/news/collaboration-2024.jpg",         poster: "/img/posters/collaboration-2024.jpg",         posterWidth: 1200, posterHeight: 1697 },
 ];
 
 /** Newest first. `YYYY.MM.DD` sorts correctly as a plain string. */

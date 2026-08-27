@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Aura, ChapterLabel, ScrollRail, TaglineMarquee } from "@/components/narrative";
 import { PosterRail } from "@/components/poster-rail";
-import { ArrowRight, ScrollHint, SERVICE_ICONS } from "@/components/icons";
+import { ArrowRight, SERVICE_ICONS } from "@/components/icons";
 import { CORPORATE, DIVISIONS, GROUP_CHAIN, PLATFORM_PARTNERS, SERVICES } from "@/lib/content";
 
 /** Delivery divisions only — Headquarters (3) is not a delivery function. */
@@ -62,13 +62,6 @@ export default function Home() {
             marketing — building production systems for Dentsu Digital and its clients in Japan
             and across APAC.
           </p>
-        </div>
-
-        <div className="absolute bottom-11 left-[var(--gutter)] hidden items-center gap-3.5 sm:flex">
-          <ScrollHint className="text-accent" />
-          <span className="font-mono text-[11px] tracking-[0.22em] text-faint uppercase">
-            Scroll — five chapters
-          </span>
         </div>
       </section>
 
@@ -178,17 +171,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============ 03 — THE GEOGRAPHY ============ */}
-      <section className="grid border-t border-white/10 lg:grid-cols-2">
-        <div className="flex flex-col justify-center gap-[26px] bg-ink-deep px-[var(--gutter)] py-32">
+      {/* ============ 03 — THE GEOGRAPHY ============
+           The globe is composed with its subject on the right and open space
+           on the left, so it runs full-bleed and dissolves leftward into the
+           ground colour under the copy. Below lg the copy cannot sit on top of
+           it legibly, so the globe drops into its own band underneath. */}
+      <section className="relative overflow-hidden border-t border-white/10 bg-ink-deep">
+        <div className="relative z-10 flex flex-col gap-[26px] px-[var(--gutter)] pt-32 pb-16 lg:max-w-[54%] lg:pb-32">
           <ChapterLabel number="03" title="The geography" />
           <h2 className="rv font-display text-[length:var(--text-scene)] leading-[1.04] font-light tracking-[-0.026em] text-balance text-chalk">
-            One time zone from Tokyo.
+            Ulaanbaatar to Tokyo, APAC and EMEA.
           </h2>
           <p className="max-w-[560px] text-[17px] leading-[1.74] text-pretty text-soft">
-            One network away from everywhere. Ulaanbaatar sits an hour behind Tokyo — close enough
-            to work the same day as our Japanese clients, far enough to build a deep engineering
-            bench of our own. Through the Dentsu network, that bench reaches APAC and EMEA.
+            DDAM delivers from one place. An hour behind Tokyo and inside the dentsu network, a
+            full AI, data and marketing team sits in the same working day as Japan — and within
+            reach of APAC and EMEA.
           </p>
           <ul className="rv mt-2.5 flex flex-wrap gap-3">
             <li className="border border-accent px-5 py-3 font-mono text-[11.5px] tracking-[0.14em] text-chalk uppercase">
@@ -203,17 +200,22 @@ export default function Home() {
           </ul>
         </div>
 
-        <div className="relative min-h-[360px] overflow-hidden bg-ink-deep lg:min-h-[560px]">
+        <div className="relative aspect-[16/10] w-full lg:absolute lg:inset-0 lg:aspect-auto lg:h-full">
           <Image
-            src="/img/globe-reach.jpg"
-            alt="Network connections reaching from Ulaanbaatar to Japan, APAC and EMEA"
+            src="/img/geography-globe.jpg"
+            alt="A globe showing network connections between Ulaanbaatar, Japan, APAC and EMEA"
             fill
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="zoom object-cover object-[46%_50%] opacity-65"
+            sizes="100vw"
+            className="zoom object-cover object-[62%_50%] lg:object-[right_center]"
+          />
+          {/* the leftward fade — opaque under the copy, clear over the globe */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 hidden bg-[linear-gradient(90deg,#091426_0%,#091426_20%,rgba(9,20,38,0.94)_34%,rgba(9,20,38,0.58)_52%,rgba(9,20,38,0.14)_74%,rgba(9,20,38,0)_92%)] lg:block"
           />
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-[linear-gradient(90deg,#091426_0%,rgba(9,20,38,0.42)_38%,rgba(9,20,38,0)_78%)]"
+            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(9,20,38,0.62)_0%,rgba(9,20,38,0)_26%,rgba(9,20,38,0)_74%,rgba(9,20,38,0.72)_100%)]"
           />
         </div>
       </section>
