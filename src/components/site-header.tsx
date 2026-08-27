@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { NAV } from "@/lib/content";
 import { ArrowRight } from "@/components/icons";
@@ -9,21 +8,28 @@ import { ArrowRight } from "@/components/icons";
  */
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-20 border-b border-white/10 bg-ink/80 backdrop-blur-xl backdrop-saturate-150">
+    <header className="hdr sticky top-0 z-20 border-b border-white/10 bg-ink/80 backdrop-blur-xl backdrop-saturate-150">
       <div className="flex h-[76px] items-center justify-between px-[var(--gutter)]">
-        <Link href="/" className="shrink-0" aria-label={`${"Dentsu Data Artist Mongol"} — home`}>
-          <Image
-            src="/img/ddam-logo.png"
-            alt="Dentsu Data Artist Mongol"
-            width={520}
-            height={209}
-            priority
-            className="h-[30px] w-auto"
-          />
+        <Link href="/" className="hlogo-link shrink-0" aria-label="Dentsu Data Artist Mongol — home">
+          {/* The logo is drawn as a mask over fill layers rather than as an
+              <img>, so it can fill like a vessel during the home page's
+              opening scene. Every opaque pixel of the source PNG is white
+              (checked: 242-255 greyscale), so a white fill masked by its alpha
+              is pixel-identical to the PNG once the fill reaches the top —
+              which is the state it holds on every other page.
+
+              The lock-up stacks four lines: mark, three of wordmark, and a
+              tagline. At 30px the tagline was ~3px tall and the bottom half of
+              the logo was texture. --logo-h is 46px, about as far as the 76px
+              bar goes while keeping air around it. */}
+          <span className="hlogo" aria-hidden="true">
+            <span className="hlogo-dim" />
+            <span className="hlogo-fill" />
+          </span>
         </Link>
 
         {/* desktop nav */}
-        <nav className="hidden items-center gap-[34px] lg:flex" aria-label="Primary">
+        <nav className="hdr-nav hidden items-center gap-[34px] lg:flex" aria-label="Primary">
           {NAV.map((item) => (
             <Link
               key={item.href}
@@ -43,7 +49,7 @@ export function SiteHeader() {
         </nav>
 
         {/* mobile disclosure */}
-        <details className="group relative lg:hidden [&_summary::-webkit-details-marker]:hidden">
+        <details className="hdr-nav group relative lg:hidden [&_summary::-webkit-details-marker]:hidden">
           <summary
             className="flex cursor-pointer list-none items-center gap-2.5 font-mono text-[11px] tracking-[0.18em] text-soft uppercase"
             aria-label="Toggle navigation menu"

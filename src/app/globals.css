@@ -109,11 +109,36 @@
   /* both of these live inside a clipping section — named timeline required */
   .plx  { animation: ddam-floaty linear both;  animation-timeline: --clip-scope; animation-range: cover; }
   .zoom { animation: ddam-zoomout linear both; animation-timeline: --clip-scope; animation-range: entry 0% cover 70%; }
+
+  /* `.rv` for content inside a clipping section: same reveal, named timeline.
+     A plain `view()` in there resolves against the section rather than the
+     document and pins at a constant progress. */
+  .rv-clip { animation: ddam-reveal linear both; animation-timeline: --clip-scope; animation-range: entry 6% cover 34%; }
+
 }
 
-/* ---- headline: line-by-line kinetic reveal (time-based, fires on load) ---- */
+/* ---- headline: line-by-line kinetic reveal --------------------------
+   Time-based is the fallback only. Chapter 00 now sits below the opening
+   scene, so a reveal that fires on load has finished before the reader has
+   scrolled to it — it has to be driven by the section's own timeline. The
+   stagger lives here rather than in inline animation-delay, because delay
+   means nothing on a progress-based timeline; the offset has to be expressed
+   as a different animation-range per line. */
 .kw { display: block; overflow: hidden; padding-bottom: 0.08em; }
 .ki { display: block; animation: ddam-kinup 1.15s cubic-bezier(.16,1,.3,1) both; }
+.kw:nth-child(1) .ki { animation-delay: 0.10s; }
+.kw:nth-child(2) .ki { animation-delay: 0.24s; }
+.kw:nth-child(3) .ki { animation-delay: 0.38s; }
+
+/* These must come AFTER the base rule above: the `animation` shorthand resets
+   `animation-timeline` to `auto`, so setting the timeline before it silently
+   does nothing and the lines never hide. */
+@supports (animation-timeline: view()) {
+  .ki { animation-timeline: --clip-scope; }
+  .kw:nth-child(1) .ki { animation-range: entry 8%  cover 32%; }
+  .kw:nth-child(2) .ki { animation-range: entry 14% cover 38%; }
+  .kw:nth-child(3) .ki { animation-range: entry 20% cover 44%; }
+}
 @keyframes ddam-kinup {
   from { transform: translate3d(0, 108%, 0); opacity: 0; filter: blur(7px); }
   to   { transform: none; opacity: 1; filter: blur(0); }
@@ -357,6 +382,293 @@
   .pv-figure { transform: none !important; }
 }
 
+/* ---- the opening scene + the logo that flies out of it ---------------
+   Home page only. The tree grows, the logo fills like a vessel, the statement
+   types itself — and then it waits. Nothing dismisses itself; the reader
+   scrolls, and the scene scrolls away opaque while the logo travels to the
+   header slot it actually lives in.
+
+   GEOMETRY. Every number the flight needs is here. The logo rendered in the
+   scene IS the header's logo, transformed; its landing state is `transform:
+   none`, so arrival cannot drift. `transform-origin: 0 50%` means scale() holds
+   the left edge and the vertical centre still, so the translate is simply
+   "where do I want the left edge and the centre" minus "where they already
+   are" — natural left edge is --gutter, natural centre is half the 76px bar.
+   The scene's own copy is anchored to the same properties, so the two agree by
+   construction instead of by tuning.                                       */
+:root {
+  --logo-h: 46px;              /* header logo height — the one source */
+  --logo-ar: 2.488;            /* 520 / 209 */
+  --hdr-h: 76px;
+
+  --intro-scale: 1.9;          /* logo magnification inside the scene */
+  --intro-cx: 74vw;            /* logo centre, x */
+  --intro-cy: 44svh;           /* logo centre, y */
+  --intro-fill: 1.7s;          /* how long the vessel takes to fill */
+  --intro-slot: 0.26s;         /* one tree stage */
+  --intro-stage-fade: 0.34s;
+  --intro-type-delay: 0.34s;
+  --intro-type-dur: 1.25s;
+  --intro-fly: 60vh;           /* scroll distance the flight takes */
+}
+@media (max-width: 1023px) {
+  :root { --intro-scale: 1.45; --intro-cx: 50vw; --intro-cy: 58svh; }
+}
+
+.intro {
+  position: relative;
+  min-height: 100svh;
+  background: var(--color-ink);
+  overflow: hidden;
+}
+
+/* --- the tree --- */
+.intro-tree {
+  position: absolute;
+  left: 26vw;
+  top: 50svh;
+  transform: translate(-50%, -50%);
+  width: clamp(280px, 30vw, 380px);
+  aspect-ratio: 1;
+}
+@media (max-width: 1023px) {
+  .intro-tree { left: 50vw; top: 30svh; width: clamp(200px, 56vw, 280px); }
+}
+
+/* The artwork does not grow nearly enough on its own to read as growth: the
+   painted glow blob goes from 138 to only 173 tall (of 256) between seed and
+   full tree, while the subject inside it changes completely. So the frames are
+   scaled as well, 0.40 up to 1.50.
+
+   Every stage shares the same ground line — the blob bottoms all land within
+   two pixels of y 203/256 — so 79% down the box is where the roots meet the
+   soil in all seven. Anchoring the scale there means the tree grows UP out of
+   a fixed ground rather than swelling from its middle.
+
+   The middle scales are not evenly spaced, on purpose. Each is solved against
+   the blob height the artwork already has at that stage, so what the eye sees —
+   rendered blob height — climbs in even steps: 55, 96, 137, 178, 219, 260.
+
+   Stages 6 and 7 are the SAME size and the same artwork. 6 is the transparent
+   render and 7 the one on black, so the final step is a dissolve that resolves
+   into focus instead of a movement. */
+.intro-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform-origin: 50% 79%;
+}
+.intro-frame:nth-child(1) { transform: scale(0.40); }
+.intro-frame:nth-child(2) { transform: scale(0.72); }
+.intro-frame:nth-child(3) { transform: scale(0.97); }
+.intro-frame:nth-child(4) { transform: scale(1.07); }
+.intro-frame:nth-child(5) { transform: scale(1.26); }
+.intro-frame:nth-child(6) { transform: scale(1.50); }
+.intro-frame:nth-child(7) { transform: scale(1.50); }
+
+/* Because the stages are different SIZES they have to cross-fade rather than
+   accumulate. Accumulating worked when every frame was the same opaque square
+   and each simply covered the last; a smaller earlier frame left on screen
+   instead glows through the middle of the bigger one over it and the canopy
+   goes muddy. Each frame therefore holds for a slot and then hands over: the
+   window is two slots wide and starts a slot apart, so consecutive frames
+   overlap by exactly the length of one fade. */
+.intro-frame { animation: ddam-stage-mid calc(var(--intro-slot) * 2) linear both; }
+.intro-frame:nth-child(1) { animation-name: ddam-stage-first; animation-delay: 0s; }
+.intro-frame:nth-child(2) { animation-delay: calc(var(--intro-slot) * 1); }
+.intro-frame:nth-child(3) { animation-delay: calc(var(--intro-slot) * 2); }
+.intro-frame:nth-child(4) { animation-delay: calc(var(--intro-slot) * 3); }
+.intro-frame:nth-child(5) { animation-delay: calc(var(--intro-slot) * 4); }
+.intro-frame:nth-child(6) { animation-delay: calc(var(--intro-slot) * 5); }
+/* The last one arrives and stays — this is the frame that comes to rest. */
+.intro-frame:nth-child(7) { animation-name: ddam-stage-last; animation-delay: calc(var(--intro-slot) * 6); }
+
+@keyframes ddam-stage-first { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes ddam-stage-mid   { 0% { opacity: 0; } 30%, 70% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes ddam-stage-last  { 0% { opacity: 0; } 40%, 100% { opacity: 1; } }
+
+/* --- the statement, hung directly under the flown-in logo --- */
+.intro-copy {
+  position: absolute;
+  left: var(--intro-cx);
+  top: calc(var(--intro-cy) + (var(--logo-h) * var(--intro-scale)) / 2 + 30px);
+  transform: translateX(-50%);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.intro-type-wrap {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: clamp(0.8rem, 4.2vw, 1.35rem);
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  color: var(--color-chalk);
+}
+
+/* The reveal is a clip, not a width, and the steps are a share of the
+   element's own rendered width — so it lands exactly on character boundaries
+   without depending on `ch` resolving against a font that may not have swapped
+   in yet. */
+.intro-type {
+  display: block;
+  clip-path: inset(0 100% 0 0);
+  animation: ddam-intro-type var(--intro-type-dur) steps(var(--intro-chars))
+             var(--intro-type-delay) forwards;
+}
+@keyframes ddam-intro-type { to { clip-path: inset(0 0 0 0); } }
+
+.intro-caret {
+  position: absolute;
+  top: 0.16em; bottom: 0.16em; left: 0;
+  width: 2px;
+  background: var(--color-cyan);
+  animation:
+    ddam-intro-caret var(--intro-type-dur) steps(var(--intro-chars)) var(--intro-type-delay) forwards,
+    ddam-intro-blink 0.62s steps(1) infinite;
+}
+@keyframes ddam-intro-caret { to { left: 100%; } }
+@keyframes ddam-intro-blink { 50% { opacity: 0; } }
+
+/* --- "scroll" --- appears only once the vessel is full, because by then it is
+   the only thing left to say, and disappears as soon as it is obeyed. */
+.intro-cue {
+  position: absolute;
+  left: 50%; bottom: 42px;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--color-faint);
+  opacity: 0;
+  animation: ddam-intro-cue 0.7s ease calc(var(--intro-fill) + 0.25s) both;
+}
+@keyframes ddam-intro-cue { to { opacity: 1; } }
+@supports (animation-timeline: scroll()) {
+  .intro-cue {
+    animation:
+      ddam-intro-cue 0.7s ease calc(var(--intro-fill) + 0.25s) both,
+      ddam-intro-cue-out linear both;
+    animation-timeline: auto, scroll(root block);
+    animation-range: normal, 0 18vh;
+  }
+  @keyframes ddam-intro-cue-out { to { opacity: 0; } }
+}
+
+/* ---- the header logo, as a fillable vessel --------------------------- */
+.hlogo {
+  position: relative;
+  display: block;
+  width: calc(var(--logo-h) * var(--logo-ar));
+  height: var(--logo-h);
+  /* The PNG's alpha is the lock-up. Both prefixes: Safari still wants -webkit. */
+  -webkit-mask-image: url("/img/ddam-logo.png");
+          mask-image: url("/img/ddam-logo.png");
+  -webkit-mask-size: 100% 100%;
+          mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+}
+.hlogo-dim  { position: absolute; inset: 0; background: rgba(255, 255, 255, 0.17); }
+/* Full by default. Only the home page's scene fills it from empty. */
+.hlogo-fill { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; background: var(--color-chalk); }
+
+/* The water line: one sine tile repeated across, running sideways forever. It
+   rides just above the fill, so when the fill reaches the top the wave is
+   pushed past the mask and vanishes on its own. */
+.hlogo-fill::before {
+  content: '';
+  position: absolute;
+  left: -100%; right: -100%; bottom: 100%;
+  height: 9px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='9' preserveAspectRatio='none'%3E%3Cpath d='M0 9V4.5c10 0 10-4.5 20-4.5s10 4.5 20 4.5 10-4.5 20-4.5 10 4.5 20 4.5V9z' fill='%23fff'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 80px 100%;
+  animation: ddam-hlogo-wave 1.5s linear infinite;
+}
+@keyframes ddam-hlogo-wave { to { transform: translateX(80px); } }
+
+/* ---- home page only: fill it, then fly it home ----------------------- */
+body:has(.intro) .hlogo-fill {
+  height: 0;
+  animation: ddam-hlogo-rise var(--intro-fill) cubic-bezier(.35, .1, .3, 1) 0.15s forwards;
+}
+@keyframes ddam-hlogo-rise { to { height: 100%; } }
+
+@supports (animation-timeline: scroll()) {
+  /* Out to the scene at rest, home as the reader scrolls. `from` is the scene
+     position; `to` is the slot the logo already occupies. */
+  body:has(.intro) .hlogo {
+    transform-origin: 0 50%;
+    animation: ddam-logo-fly linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 var(--intro-fly);
+  }
+  @keyframes ddam-logo-fly {
+    from {
+      transform:
+        translate(
+          calc(var(--intro-cx) - var(--gutter)
+                - (var(--logo-h) * var(--logo-ar) * var(--intro-scale)) / 2),
+          calc(var(--intro-cy) - var(--hdr-h) / 2)
+        )
+        scale(var(--intro-scale));
+    }
+    to { transform: none; }
+  }
+
+  /* The bar and the nav have no business over the scene. */
+  body:has(.intro) .hdr {
+    background: transparent;
+    border-bottom-color: transparent;
+    backdrop-filter: none;
+    animation: ddam-hdr-in linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 24vh var(--intro-fly);
+  }
+  @keyframes ddam-hdr-in {
+    to {
+      background: rgba(7, 9, 15, 0.8);
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(24px) saturate(1.5);
+    }
+  }
+
+  body:has(.intro) .hdr-nav,
+  body:has(.intro) .rail {
+    animation: ddam-hdr-in-fade linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 30vh calc(var(--intro-fly) + 6vh);
+  }
+  @keyframes ddam-hdr-in-fade { from { opacity: 0; } to { opacity: 1; } }
+}
+
+/* No scroll-driven animations: the scene still plays and still scrolls away,
+   the logo simply never flies — it sits in the header where it belongs and the
+   scene shows the statement and the tree. */
+@supports not (animation-timeline: scroll()) {
+  body:has(.intro) .hlogo { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Nothing to sit through, and no travel. The scene stays — it is content
+     now, not a curtain — but it arrives finished. */
+  /* Only the grown tree, not all six sizes piled up. */
+  .intro-frame { opacity: 0 !important; animation: none !important; }
+  .intro-frame:last-child { opacity: 1 !important; }
+  .intro-type { clip-path: none !important; }
+  .intro-caret { display: none; }
+  .intro-cue { opacity: 1 !important; }
+  .hlogo-fill { height: 100% !important; animation: none !important; }
+  .hlogo-fill::before { display: none; }
+  body:has(.intro) .hlogo { animation: none !important; transform: none !important; }
+  body:has(.intro) .hdr { animation: none !important; }
+  body:has(.intro) .hdr-nav, body:has(.intro) .rail { animation: none !important; opacity: 1 !important; }
+}
+
 /* ---- reduced motion: everything resolves to its end state ---- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -365,7 +677,7 @@
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
   }
-  .rv, .ki, .bar, .pop, .mask, .plx, .zoom {
+  .rv, .rv-clip, .ki, .bar, .pop, .mask, .plx, .zoom {
     opacity: 1 !important; transform: none !important;
     filter: none !important; clip-path: none !important;
   }

@@ -4,6 +4,7 @@ import { Aura, ChapterLabel, ScrollRail, TaglineMarquee } from "@/components/nar
 import { PosterRail } from "@/components/poster-rail";
 import { ScrollScrubVideo } from "@/components/scroll-video";
 import { CountUp } from "@/components/count-up";
+import { Intro } from "@/components/intro";
 import { ArrowRight, SERVICE_ICONS } from "@/components/icons";
 import { CORPORATE, DIVISIONS, GROUP_CHAIN, PLATFORM_PARTNERS, SERVICES } from "@/lib/content";
 
@@ -15,6 +16,10 @@ export default function Home() {
   return (
     <>
       <ScrollRail />
+
+      {/* The scene the reader scrolls past to get here. Home page only — it
+          exists to hand the logo to the header and the reader to chapter 00. */}
+      <Intro />
 
       {/* ============ 00 — OPENING SCENE ============ */}
       <section className="grain clip-scope relative flex h-[min(88vh,880px)] min-h-[560px] flex-col justify-center overflow-hidden px-[var(--gutter)]">
@@ -37,29 +42,29 @@ export default function Home() {
         />
 
         <div className="relative">
-          <div className="mb-[34px]">
+          <div className="rv-clip mb-[34px]">
             <ChapterLabel number="00" title={CORPORATE.legalName.replace(" LLC", "")} tone="soft" />
           </div>
 
           <h1 className="max-w-[900px] font-display text-[length:var(--text-hero)] leading-[0.98] font-light tracking-[-0.028em] text-balance text-chalk">
             <span className="kw">
-              <span className="ki" style={{ animationDelay: "0.10s" }}>
+              <span className="ki">
                 Intelligence,
               </span>
             </span>
             <span className="kw">
-              <span className="ki" style={{ animationDelay: "0.24s" }}>
+              <span className="ki">
                 engineered in
               </span>
             </span>
             <span className="kw">
-              <span className="ki" style={{ animationDelay: "0.38s" }}>
+              <span className="ki">
                 <em className="font-light text-accent italic">Ulaanbaatar</em>.
               </span>
             </span>
           </h1>
 
-          <p className="mt-9 max-w-[560px] text-lg leading-[1.68] text-pretty text-muted">
+          <p className="rv-clip mt-9 max-w-[560px] text-lg leading-[1.68] text-pretty text-muted">
             {CORPORATE.headcount} specialists in AI development, data engineering and digital
             marketing — building production systems for Dentsu Digital and its clients in Japan
             and across APAC.
