@@ -6,9 +6,13 @@ import { NEWS, type NewsItem } from "@/lib/content";
 
 /**
  * The chapter 05 rail. Cards run newest-first (that order comes from `NEWS`,
- * which sorts on `date`) and each one opens the full uncropped poster in a
- * native <dialog> — so Escape, the focus trap and focus restore all come from
- * the platform rather than from us.
+ * which sorts on `date`) and the rail's travel is tied to scroll position, not
+ * to a timer — see the `.rail-scope` block in globals.css. A single track, no
+ * duplicate: it no longer loops, so there is nothing to make seamless.
+ *
+ * Each card opens the full uncropped poster in a native <dialog> — so Escape,
+ * the focus trap and focus restore all come from the platform rather than
+ * from us.
  *
  * `item` is deliberately never cleared on close. The exit transition keeps the
  * dialog in the top layer while it fades, and unmounting the figure on the
@@ -16,7 +20,6 @@ import { NEWS, type NewsItem } from "@/lib/content";
  */
 export function PosterRail() {
   const [item, setItem] = useState<NewsItem | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
   const seq = useRef(0);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -28,7 +31,6 @@ export function PosterRail() {
 
   const open = useCallback((next: NewsItem) => {
     seq.current += 1;
-    setIsOpen(true);
     // A new object identity every time, so re-opening the same poster still
     // re-runs the layout effect.
     setItem({ ...next });
@@ -36,42 +38,40 @@ export function PosterRail() {
 
   const close = useCallback(() => dialogRef.current?.close(), []);
 
-  const cards = (duplicate: boolean) =>
-    NEWS.map((news) => (
-      <button
-        key={news.image}
-        type="button"
-        className="pcard"
-        onClick={() => open(news)}
-        tabIndex={duplicate ? -1 : 0}
-        aria-hidden={duplicate || undefined}
-        aria-label={`${news.title}, ${news.date} — view poster`}
-      >
-        <span className="flex items-center gap-3">
-          <span className="border border-white/20 px-2.5 py-[3px] font-mono text-[9.5px] tracking-[0.14em] text-accent uppercase">
-            {news.kind}
-          </span>
-          <span className="font-mono text-xs tracking-[0.06em] text-faint">{news.date}</span>
+  const cards = NEWS.map((news) => (
+    <button
+      key={news.image}
+      type="button"
+      className="pcard"
+      onClick={() => open(news)}
+      aria-label={`${news.title}, ${news.date} — view poster`}
+    >
+      <span className="flex items-center gap-3">
+        <span className="border border-white/20 px-2.5 py-[3px] font-mono text-[9.5px] tracking-[0.14em] text-accent uppercase">
+          {news.kind}
         </span>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={news.image}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          width={520}
-          height={735}
-          className="block aspect-[520/735] w-full object-cover"
-        />
-      </button>
-    ));
+        <span className="font-mono text-xs tracking-[0.06em] text-faint">{news.date}</span>
+      </span>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={news.image}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        width={520}
+        height={735}
+        className="block aspect-[520/735] w-full object-cover"
+      />
+    </button>
+  ));
 
   return (
     <>
-      <div className="mqwrap pslwrap" data-paused={isOpen ? "true" : undefined}>
-        <div className="psl">
-          <span>{cards(false)}</span>
-          <span aria-hidden="true">{cards(true)}</span>
+      <div className="rail-scope">
+        <div className="mqwrap pslwrap">
+          <div className="psl">
+            <span>{cards}</span>
+          </div>
         </div>
       </div>
 
@@ -79,7 +79,6 @@ export function PosterRail() {
         ref={dialogRef}
         className="pv"
         aria-label={item ? `${item.title} poster` : undefined}
-        onClose={() => setIsOpen(false)}
       >
         {item ? (
           <div

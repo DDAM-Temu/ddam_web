@@ -36,12 +36,38 @@ Tokens live in the `@theme` block at the top of `src/app/globals.css`.
 All of it is CSS. There is no animation JavaScript, no observer, no
 library — the page ships zero client components.
 
-- Reveals, bar growth, parallax and the zoom use `animation-timeline: view()`,
-  wrapped in `@supports` so browsers without scroll-driven animations simply
-  show the content rather than hiding it behind an animation that never runs.
+- Reveals and bar growth use anonymous `animation-timeline: view()`, wrapped in
+  `@supports` so browsers without scroll-driven animations simply show the
+  content rather than hiding it behind an animation that never runs.
 - The progress rail uses `animation-timeline: scroll(root block)`.
 - Chapter labels hold with `position: sticky` while their content scrolls past.
+- The chapter 05 poster rail is scroll-linked rather than timed, so it always
+  opens on the newest poster and walks backwards through time as you descend.
+  Below 768px it becomes a swipeable, snapping scroller instead — the track is
+  ~7x the viewport there, and scroll-linking it makes it fly.
 - Everything is guarded by `prefers-reduced-motion: reduce`.
+
+### Named timelines, and why they are not optional
+
+**An anonymous `view()` resolves against the nearest scroll container, not the
+document — and `overflow: hidden` makes an element a scroll container.** Two
+bugs came out of this, both of which looked fine on a still:
+
+1. `body { overflow-x: hidden }` made the root a scroll container, so every
+   reveal on the page pinned at opacity 0. Fixed with `overflow-x: clip`, which
+   clips without creating a scroll container.
+2. The hero parallax and the globe zoom sit inside clipping sections, so their
+   timelines resolved against those sections — which never scroll. Both pinned
+   at exactly 50% progress and never moved.
+
+So any clipping section that hosts a scroll-driven child carries `.clip-scope`,
+which publishes a named `view-timeline`; the child references that name instead
+of `view()`. The poster rail does the same through `.rail-scope`, because its
+`.mqwrap` clips too.
+
+If a scroll-driven animation ever looks frozen, check
+`el.getAnimations()[0].currentTime` — a constant value across scroll positions
+means the timeline resolved against the wrong scrollport.
 
 Two things differ deliberately from the artboard, both for performance:
 

@@ -91,14 +91,24 @@
 @keyframes ddam-floaty  { from { transform: translate3d(0, -26px, 0) scale(1.06); } to { transform: translate3d(0, 26px, 0) scale(1.06); } }
 @keyframes ddam-zoomout { from { transform: scale(1.16); } to { transform: scale(1); } }
 
+/* A section that clips (overflow: hidden) is itself a scroll container, so an
+   anonymous `view()` on a child resolves against THAT section rather than the
+   document. The section never scrolls, so such an animation pins at a constant
+   progress — 50% — and never moves. Any clipping section hosting a
+   scroll-driven child therefore publishes a named timeline, which is measured
+   against the section's own scrollport: the document. */
+.clip-scope { view-timeline-name: --clip-scope; view-timeline-axis: block; }
+
 @supports (animation-timeline: view()) {
   .rv   { animation: ddam-reveal linear both;  animation-timeline: view(); animation-range: entry 6% cover 32%; }
   .bar  { transform-origin: left center;
           animation: ddam-bargrow cubic-bezier(.16,1,.3,1) both; animation-timeline: view(); animation-range: entry 18% cover 46%; }
   .pop  { animation: ddam-popin cubic-bezier(.16,1,.3,1) both;  animation-timeline: view(); animation-range: entry 12% cover 38%; }
   .mask { animation: ddam-wipe cubic-bezier(.16,1,.3,1) both;   animation-timeline: view(); animation-range: entry 10% cover 40%; }
-  .plx  { animation: ddam-floaty linear both;  animation-timeline: view(); animation-range: cover; }
-  .zoom { animation: ddam-zoomout linear both; animation-timeline: view(); animation-range: entry 0% cover 70%; }
+
+  /* both of these live inside a clipping section — named timeline required */
+  .plx  { animation: ddam-floaty linear both;  animation-timeline: --clip-scope; animation-range: cover; }
+  .zoom { animation: ddam-zoomout linear both; animation-timeline: --clip-scope; animation-range: entry 0% cover 70%; }
 }
 
 /* ---- headline: line-by-line kinetic reveal (time-based, fires on load) ---- */
@@ -233,20 +243,61 @@
           mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
 }
 .mq, .psl { display: flex; width: max-content; will-change: transform; }
-.mq  { animation: ddam-mqrun 46s linear infinite; }
-.psl { animation: ddam-mqrun 78s linear infinite; }
+.mq { animation: ddam-mqrun 46s linear infinite; }
 .mq > span  { display: flex; align-items: center; gap: 56px; padding-right: 56px; }
 .psl > span { display: flex; gap: 28px; padding-right: 28px; }
 @keyframes ddam-mqrun { to { transform: translate3d(-50%, 0, 0); } }
 
-.pslwrap:hover .psl,
-.pslwrap:focus-within .psl,
-.pslwrap[data-paused="true"] .psl { animation-play-state: paused; }
+/* ---- poster rail ------------------------------------------------------
+   The rail runs newest-first, and its position is tied to scroll rather than
+   to a timer. A timed marquee is already mid-loop by the time the reader
+   reaches chapter 05, so it opens on an arbitrary poster and reads as
+   unordered; scroll-linked, it always opens on the newest and walks backwards
+   through time as you descend.
 
-/* The wrapper clips at its padding edge, so this padding is the headroom the
-   -12px hover lift needs. Without it the lift pushes the date/kind row out of
-   the overflow box and it disappears. */
-.pslwrap { padding-block: 20px; }
+   The timeline has to be NAMED. `.mqwrap` is `overflow: hidden`, which makes
+   it a scroll container, so a plain `view()` on `.psl` would resolve against
+   the wrapper instead of the document and never advance. `.rail-scope` sits
+   outside the clip, so its scrollport is the document.
+
+   The wrapper clips at its padding edge, so `padding-block` is the headroom
+   the -12px hover lift needs — without it the lift pushes each card's
+   kind/date row out of the overflow box and it disappears.                */
+.pslwrap {
+  padding-block: 20px;
+  /* Fallback for browsers with no scroll-driven animations: the rail is a
+     plain horizontal scroller, so every poster is still reachable. */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+.pslwrap::-webkit-scrollbar { display: none; }
+
+@keyframes ddam-railscroll {
+  from { transform: translate3d(0, 0, 0); }
+  /* travel = track width - viewport width, so the last card lands flush right */
+  to   { transform: translate3d(calc(-100% + 100vw), 0, 0); }
+}
+
+@supports (animation-timeline: view()) {
+  .rail-scope { view-timeline-name: --poster-rail; view-timeline-axis: block; }
+  .pslwrap { overflow-x: hidden; }
+  .psl {
+    animation: ddam-railscroll linear both;
+    animation-timeline: --poster-rail;
+    /* Starts once the rail is a third of the way in and ends as it begins to
+       leave, so the travel happens while it is actually on screen. */
+    animation-range: entry 30% exit 70%;
+  }
+}
+
+/* On a narrow screen the track is ~7x the viewport, so scroll-linking it makes
+   it fly. Swiping is the native gesture there anyway — hand it back. */
+@media (max-width: 767px) {
+  .pslwrap { overflow-x: auto; scroll-snap-type: x proximity; }
+  .psl { animation: none; transform: none; }
+  .pcard { scroll-snap-align: center; }
+}
 
 .pcard { width: 284px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px;
          padding: 0; border: 0; background: none; color: inherit; text-align: left;
@@ -320,4 +371,7 @@
   }
   .aura, .ring { display: none; }
   .grain::after { display: none; }
+  /* the rail's travel is scroll-linked, not timed — keep it, but let the
+     reader move it by hand too */
+  .pslwrap { overflow-x: auto; }
 }

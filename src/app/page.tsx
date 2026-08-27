@@ -15,7 +15,7 @@ export default function Home() {
       <ScrollRail />
 
       {/* ============ 00 — OPENING SCENE ============ */}
-      <section className="grain relative flex h-[min(88vh,880px)] min-h-[560px] flex-col justify-center overflow-hidden px-[var(--gutter)]">
+      <section className="grain clip-scope relative flex h-[min(88vh,880px)] min-h-[560px] flex-col justify-center overflow-hidden px-[var(--gutter)]">
         <Aura />
         <Image
           src="/img/hero-network.jpg"
@@ -176,7 +176,7 @@ export default function Home() {
            on the left, so it runs full-bleed and dissolves leftward into the
            ground colour under the copy. Below lg the copy cannot sit on top of
            it legibly, so the globe drops into its own band underneath. */}
-      <section className="relative overflow-hidden border-t border-white/10 bg-ink-deep">
+      <section className="clip-scope relative overflow-hidden border-t border-white/10 bg-ink-deep">
         <div className="relative z-10 flex flex-col gap-[26px] px-[var(--gutter)] pt-32 pb-16 lg:max-w-[54%] lg:pb-32">
           <ChapterLabel number="03" title="The geography" />
           <h2 className="rv font-display text-[length:var(--text-scene)] leading-[1.04] font-light tracking-[-0.026em] text-balance text-chalk">
