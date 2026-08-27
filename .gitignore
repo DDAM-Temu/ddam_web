@@ -59,3 +59,7 @@ docs/
 
 # Stray full-size canvas export (63 MB). Kept locally, not in the repo.
 design/global.png
+
+# Rotating-globe source (12 MB, 1800x1080). The scrubbed 1440p/24fps
+# derivative in public/video is what ships; see README for the recipe.
+Earth.mp4

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
 import { ArrowRight } from "@/components/icons";
-import { CORPORATE } from "@/lib/content";
+import { CORPORATE, SOCIAL } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -55,13 +55,26 @@ export default function ContactPage() {
               <dt className="w-[150px] shrink-0 font-mono text-[10.5px] tracking-[0.16em] text-faint uppercase">
                 Social
               </dt>
-              <dd className="flex gap-6 text-[16px] text-paper">
-                <a className="transition-colors hover:text-accent" href={CORPORATE.social.linkedin} rel="noreferrer noopener" target="_blank">
-                  LinkedIn
-                </a>
-                <a className="transition-colors hover:text-accent" href={CORPORATE.social.facebook} rel="noreferrer noopener" target="_blank">
-                  Facebook
-                </a>
+              {/* The handle is shown, not just the network: there are two
+                  Instagram accounts, and this is the page a reader comes to
+                  when they want to know which one they are following. */}
+              <dd className="flex flex-col gap-2.5 text-[16px] text-paper">
+                {SOCIAL.map((account) => (
+                  <a
+                    key={account.href}
+                    className="group flex flex-wrap items-baseline gap-x-3 gap-y-1"
+                    href={account.href}
+                    rel="noreferrer noopener"
+                    target="_blank"
+                  >
+                    <span className="transition-colors group-hover:text-accent">
+                      {account.network}
+                    </span>
+                    <span className="font-mono text-[12.5px] text-dim transition-colors group-hover:text-soft">
+                      {account.handle}
+                    </span>
+                  </a>
+                ))}
               </dd>
             </div>
           </dl>

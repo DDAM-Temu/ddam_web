@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AwaitingContent, PageHeader } from "@/components/page-header";
 import { ChapterLabel } from "@/components/narrative";
 import { ArrowRight } from "@/components/icons";
-import { CORPORATE, DIVISIONS } from "@/lib/content";
+import { CORPORATE, DIVISION_COUNT_WORD, DIVISIONS } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Careers",
@@ -17,7 +17,7 @@ export default function CareersPage() {
         number="06"
         eyebrow="Careers"
         title="Build production AI, from Ulaanbaatar."
-        intro={`${CORPORATE.headcount} people across six divisions, delivering for Dentsu Digital and its clients in Japan and across APAC.`}
+        intro={`${CORPORATE.headcount} people across ${DIVISION_COUNT_WORD} divisions, delivering for Dentsu Digital and its clients in Japan and across APAC.`}
       />
 
       <section className="border-b border-white/10 px-[var(--gutter)] py-24">
