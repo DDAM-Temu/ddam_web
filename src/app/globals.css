@@ -139,7 +139,55 @@
   .kw:nth-child(2) .ki { animation-range: entry 14% cover 38%; }
   .kw:nth-child(3) .ki { animation-range: entry 20% cover 44%; }
 }
+
+/* ---- chapter 00's arrival ---------------------------------------------
+   The ranges above are what an `entry`-anchored reveal wants when a section
+   is the first thing on the page. Chapter 00 is not: it sits below a full
+   viewport of opening scene, so its own `entry` phase begins at scroll 0 —
+   while the scene still covers the screen. Measured, the reveal ran from
+   scrollY 150 to 750 and was finished at exactly the moment the headline
+   reached a readable position. The reader never saw it.
+
+   So the opening section is anchored on `cover` instead, around the 50% mark.
+   That point is where the headline sits mid-viewport almost regardless of
+   window height: the scene is always exactly one viewport tall, so the
+   section's cover phase always starts at scroll 0 and runs `viewport +
+   section` long — which puts the headline near the middle at ~50% whether the
+   window is 700px or 1200px tall.                                          */
+@supports (animation-timeline: view()) {
+  .hero .rv-clip { animation-range: cover 36% cover 56%; }
+  .hero .kw:nth-child(1) .ki { animation-range: cover 40% cover 58%; }
+  .hero .kw:nth-child(2) .ki { animation-range: cover 44% cover 62%; }
+  .hero .kw:nth-child(3) .ki { animation-range: cover 48% cover 66%; }
+
+  /* Hover replays it: a different keyframe name is a different animation, so
+     it starts fresh, on a clock rather than on the scroll position. The
+     per-line delays in the base rule supply the stagger. On leaving, the name
+     reverts and the scroll timeline picks it up again at whatever progress the
+     section is really at — which, once it has arrived, is the finished state.
+
+     Guarded on a real pointer: `:hover` on a touchscreen can stick after a
+     tap, which would leave the headline mid-reveal. */
+  @media (hover: hover) and (pointer: fine) {
+    .hero h1:hover .ki {
+      animation-name: ddam-kinup-replay;
+      animation-timeline: auto;
+      animation-range: normal;
+    }
+  }
+}
 @keyframes ddam-kinup {
+  from { transform: translate3d(0, 108%, 0); opacity: 0; filter: blur(7px); }
+  to   { transform: none; opacity: 1; filter: blur(0); }
+}
+/* Identical to the above, and duplicated on purpose: `animation-name` is the
+   only animation property whose change actually restarts a CSS animation, so
+   hover needs a second name to swap to. Changing `animation-timeline` alone
+   looks like it should work and does not — verified, the timeline flipped to
+   `auto` and the lines stayed exactly where they were, because the existing
+   animation is re-attached rather than replayed and it had already finished.
+   Keep the two in step. */
+@keyframes ddam-kinup-replay {
   from { transform: translate3d(0, 108%, 0); opacity: 0; filter: blur(7px); }
   to   { transform: none; opacity: 1; filter: blur(0); }
 }

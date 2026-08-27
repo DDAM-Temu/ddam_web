@@ -2,6 +2,30 @@
 
 import { useEffect, useRef } from "react";
 
+/** Fraction of the duration at which the final increment should land. */
+const SETTLE_AT = 0.76;
+
+/**
+ * The easing exponent, derived from how far there is to count rather than
+ * fixed — which is what stops small figures looking broken.
+ *
+ * A fixed easeOutQuart puts most of its motion in the first third. That is
+ * right for 157, where the span is large enough that every frame changes a
+ * digit for most of the duration. It is wrong for a count to 4: with only three
+ * increments to spend, all of them are gone by ~360ms and the figure then sits
+ * still for the remaining two thirds, which reads as no animation at all.
+ *
+ * So instead of picking a curve, solve for one. The last increment lands when
+ * the eased progress passes `1 - 0.5/span`; requiring that to happen at
+ * SETTLE_AT gives `(1 - SETTLE_AT)^p = 0.5 / span`. Every figure then spends
+ * the same share of its duration actually counting, whatever it is counting to:
+ * p is about 1.3 for a span of 3, 2.1 for 10, 3.4 for 67, 4.0 for 156.
+ */
+function power(span: number): number {
+  if (span <= 1) return 1; // linear; there is nothing to shape
+  return Math.min(6, Math.max(1, Math.log(0.5 / span) / Math.log(1 - SETTLE_AT)));
+}
+
 /**
  * Counts from `from` up to `value` the first time it scrolls into view, then
  * stops and stays put. Scrolling back past it does not replay — a figure that
@@ -64,8 +88,8 @@ export function CountUp({
         const distance = value - from;
         const tick = (now: number) => {
           const t = Math.min(1, (now - t0) / duration);
-          // easeOutQuart: quick off the mark, and settles rather than stopping.
-          const eased = 1 - Math.pow(1 - t, 4);
+          // Quick off the mark, settling rather than stopping.
+          const eased = 1 - Math.pow(1 - t, power(distance));
           write(Math.round(from + distance * eased));
           if (t < 1) raf = requestAnimationFrame(tick);
         };
@@ -83,7 +107,10 @@ export function CountUp({
   }, [value, from, duration]);
 
   return (
-    <span className={`grid ${className}`}>
+    // inline-grid, not grid: these sit in a right-aligned fixed-width cell in
+    // the division table, and an inline-level box is what `text-align` can
+    // actually position.
+    <span className={`inline-grid ${className}`}>
       <span aria-hidden="true" className="invisible col-start-1 row-start-1">
         {value}
       </span>
