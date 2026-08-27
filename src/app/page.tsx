@@ -1,12 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Aura,
-  ChapterLabel,
-  PosterRail,
-  ScrollRail,
-  TaglineMarquee,
-} from "@/components/narrative";
+import { Aura, ChapterLabel, ScrollRail, TaglineMarquee } from "@/components/narrative";
+import { PosterRail } from "@/components/poster-rail";
 import { ArrowRight, ScrollHint, SERVICE_ICONS } from "@/components/icons";
 import { CORPORATE, DIVISIONS, GROUP_CHAIN, PLATFORM_PARTNERS, SERVICES } from "@/lib/content";
 

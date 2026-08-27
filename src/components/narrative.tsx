@@ -1,4 +1,4 @@
-import { TAGLINES, NEWS } from "@/lib/content";
+import { TAGLINES } from "@/lib/content";
 
 /** The "00 — Dentsu Data Artist Mongol" eyebrow that opens every chapter. */
 export function ChapterLabel({
@@ -69,38 +69,5 @@ export function TaglineMarquee() {
         </div>
       </div>
     </section>
-  );
-}
-
-/** Poster rail for chapter 05. Pauses on hover and on keyboard focus. */
-export function PosterRail() {
-  const items = NEWS.map((item) => (
-    <span key={item.image} className="pcard">
-      <span className="flex items-center gap-3">
-        <span className="border border-white/20 px-2.5 py-[3px] font-mono text-[9.5px] tracking-[0.14em] text-accent uppercase">
-          {item.kind}
-        </span>
-        <span className="font-mono text-xs tracking-[0.06em] text-faint">{item.date}</span>
-      </span>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={item.image}
-        alt={item.title}
-        loading="lazy"
-        decoding="async"
-        width={520}
-        height={735}
-        className="block aspect-[520/735] w-full object-cover"
-      />
-    </span>
-  ));
-
-  return (
-    <div className="mqwrap pslwrap">
-      <div className="psl">
-        <span>{items}</span>
-        <span aria-hidden="true">{items}</span>
-      </div>
-    </div>
   );
 }

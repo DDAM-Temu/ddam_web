@@ -56,3 +56,6 @@ DDAM-GIRLS-2026/
 docs/
 # Product requirements document.
 *.docx
+
+# Stray full-size canvas export (63 MB). Kept locally, not in the repo.
+design/global.png

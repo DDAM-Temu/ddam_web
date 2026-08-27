@@ -56,6 +56,15 @@ Two things differ deliberately from the artboard, both for performance:
 scroll container, and every `view()` timeline would resolve against it instead
 of the document — freezing all reveals at opacity 0.
 
+The one exception to the no-JS rule is the chapter 05 poster rail
+(`src/components/poster-rail.tsx`), the site's only client component. Clicking
+a card opens the full uncropped poster in a native `<dialog>`, so Escape, the
+focus trap and focus restore come from the platform. Its enter/exit animation
+is still pure CSS — `overlay` and `display` transition with `allow-discrete`,
+which keeps the dialog in the top layer while it fades out, and
+`@starting-style` supplies the entry values. Browsers without either simply
+show and hide it instantly.
+
 ## Content
 
 `src/lib/content.ts` is the single source of truth, and everything in it is
@@ -66,7 +75,11 @@ sourced:
 - Address, phone, email, founding year — the live ddam.ai contact and about
   pages.
 - Brand hex values — `ddam-logo/180808DDAM-Logo-1-1.pdf`.
-- News items — the 2023–2026 poster archive.
+- News items — the 2023–2026 poster archive. `NEWS` sorts on `date`, so the
+  rail and the feed always run newest-first regardless of declaration order.
+  The lightbox images in `public/img/posters/` are 1200px-wide renders of the
+  archive originals (Panasonic rasterised from its 200 MB PDF); each was
+  matched to its source by image comparison, not by filename.
 
 Sections the PRD requires but for which no copy exists yet render an
 `AwaitingContent` block listing what is outstanding. **No placeholder prose is
