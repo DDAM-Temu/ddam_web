@@ -22,7 +22,7 @@ export default function Home() {
       <Intro />
 
       {/* ============ 00 — OPENING SCENE ============ */}
-      <section className="grain clip-scope relative flex h-[min(88vh,880px)] min-h-[560px] flex-col justify-center overflow-hidden px-[var(--gutter)]">
+      <section className="hero grain clip-scope relative flex h-[min(88vh,880px)] min-h-[560px] flex-col justify-center overflow-hidden px-[var(--gutter)]">
         <Aura />
         <Image
           src="/img/hero-network.jpg"
@@ -112,21 +112,22 @@ export default function Home() {
                       />
                     </div>
                     <dd className="w-[30px] shrink-0 text-right font-mono text-[13px] text-paper">
-                      {d.count}
+                      <CountUp value={d.count} />
                     </dd>
                   </div>
                 ))}
               </dl>
             </div>
 
-            {/* Only the headcount counts up. A four is over before it is seen,
-                and a founding year is not a quantity — counting to 2018 would
-                be motion for its own sake. */}
+            {/* Every figure in this chapter counts, these three and the division
+                counts above. `founded` is a year rather than a quantity, so it
+                is the one that reads oddly climbing from 1 — CountUp takes a
+                `from` if it should start nearer its own decade instead. */}
             <dl className="rv grid grid-cols-3 border-t border-white/10">
               {[
-                { value: CORPORATE.headcount, label: "Specialists", counts: true },
-                { value: SERVICES.length, label: "Service lines", counts: false },
-                { value: CORPORATE.founded, label: "Founded", counts: false },
+                { value: CORPORATE.headcount, label: "Specialists" },
+                { value: SERVICES.length, label: "Service lines" },
+                { value: Number(CORPORATE.founded), label: "Founded" },
               ].map((stat, i) => (
                 <div
                   key={stat.label}
@@ -135,7 +136,7 @@ export default function Home() {
                   }`}
                 >
                   <dd className="pop font-display text-[length:var(--text-chapter)] leading-none font-light tracking-[-0.02em] text-chalk">
-                    {stat.counts ? <CountUp value={CORPORATE.headcount} /> : stat.value}
+                    <CountUp value={stat.value} />
                   </dd>
                   <dt className="font-mono text-[10.5px] tracking-[0.2em] text-faint uppercase">
                     {stat.label}
