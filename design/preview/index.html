@@ -1,0 +1,665 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>DDAM Homepage</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    html, body { margin: 0; padding: 0; background: #07090F; min-height: 100%; }
+    body { font-family: 'Instrument Sans', 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    * { box-sizing: border-box; }
+    a { color: #6FA0FF; text-decoration: none; }
+    a:hover { color: #A9C6FF; }
+
+    @property --ang { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+    /* ---- the scroll mechanic: chapter labels hold while content moves past ---- */
+    .hold { position: sticky; top: 96px; align-self: start; }
+
+    /* ---- ambient aurora field ---- */
+    .aura { position: absolute; inset: -30%; pointer-events: none; filter: blur(90px); opacity: 0.55; }
+    .aura i { position: absolute; display: block; border-radius: 50%; mix-blend-mode: screen;
+              animation: drift 30s ease-in-out infinite alternate; }
+    .aura i:nth-child(1) { width: 46%; height: 52%; left: 4%;  top: 6%;  background: #12408F; animation-duration: 26s; }
+    .aura i:nth-child(2) { width: 38%; height: 44%; left: 46%; top: 30%; background: #0E6E8C; animation-duration: 34s; animation-delay: -8s; }
+    .aura i:nth-child(3) { width: 30%; height: 36%; left: 66%; top: 2%;  background: #3A1E6E; animation-duration: 30s; animation-delay: -16s; }
+    .aura i:nth-child(4) { width: 22%; height: 26%; left: 22%; top: 52%; background: #7A1230; animation-duration: 38s; animation-delay: -4s; opacity: 0.7; }
+    @keyframes drift {
+      from { transform: translate3d(0,0,0) scale(1); }
+      to   { transform: translate3d(6%, -7%, 0) scale(1.22); }
+    }
+
+    /* ---- film grain ---- */
+    .grain::after {
+      content: ''; position: absolute; inset: -60px; pointer-events: none; opacity: 0.055;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      animation: grainshift 900ms steps(5) infinite;
+    }
+    @keyframes grainshift {
+      0%   { transform: translate(0,0); }
+      20%  { transform: translate(-14px, 8px); }
+      40%  { transform: translate(9px, -12px); }
+      60%  { transform: translate(-7px, -9px); }
+      80%  { transform: translate(12px, 6px); }
+      100% { transform: translate(0,0); }
+    }
+
+    /* ---- scroll progress rail ---- */
+    .rail { position: fixed; left: 34px; top: 50%; transform: translateY(-50%); z-index: 30;
+            display: flex; flex-direction: column; align-items: center; gap: 10px; pointer-events: none; }
+    .rail b { display: block; width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.22); }
+    .rail u { position: relative; display: block; width: 1px; height: 190px; background: rgba(255,255,255,0.12); overflow: hidden; }
+    .rail u::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, var(--accent), #8AE7FA);
+                      transform-origin: top; transform: scaleY(0);
+                      animation: railfill linear both; animation-timeline: scroll(root block); }
+    @keyframes railfill { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+    /* ---- headline: line-by-line kinetic reveal ---- */
+    .kw { display: block; overflow: hidden; padding-bottom: 0.08em; }
+    .ki { display: block; animation: kinup 1.15s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes kinup { from { transform: translateY(108%); opacity: 0; filter: blur(7px); }
+                       to   { transform: none; opacity: 1; filter: blur(0); } }
+
+    /* ---- reveal on enter ---- */
+    @keyframes ddam-reveal { from { opacity: 0; transform: translateY(34px) scale(0.985); filter: blur(5px); }
+                             to   { opacity: 1; transform: none; filter: blur(0); } }
+    @keyframes bargrow  { from { transform: scaleX(0); }   to { transform: scaleX(1); } }
+    @keyframes popin    { from { opacity: 0; transform: translateY(22px) scale(0.9); } to { opacity: 1; transform: none; } }
+    @keyframes maskwipe { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+    @keyframes floaty   { from { transform: translateY(-26px) scale(1.06); } to { transform: translateY(26px) scale(1.06); } }
+    @keyframes zoomout  { from { transform: scale(1.16); } to { transform: scale(1); } }
+
+    @supports (animation-timeline: view()) {
+      .rv   { animation: ddam-reveal linear both; animation-timeline: view(); animation-range: entry 6% cover 32%; }
+      .bar  { transform-origin: left center; animation: bargrow cubic-bezier(.16,1,.3,1) both;
+              animation-timeline: view(); animation-range: entry 18% cover 46%; }
+      .pop  { animation: popin cubic-bezier(.16,1,.3,1) both; animation-timeline: view(); animation-range: entry 12% cover 38%; }
+      .mask { animation: maskwipe cubic-bezier(.16,1,.3,1) both; animation-timeline: view(); animation-range: entry 10% cover 40%; }
+      .plx  { animation: floaty linear both; animation-timeline: view(); animation-range: cover; }
+      .zoom { animation: zoomout linear both; animation-timeline: view(); animation-range: entry 0% cover 70%; }
+    }
+
+    /* ---- interaction ---- */
+    .lift { transition: transform .5s cubic-bezier(.16,1,.3,1), border-color .5s, background-color .5s; }
+    .lift:hover { transform: translateX(10px); }
+    .card { transition: transform .55s cubic-bezier(.16,1,.3,1), box-shadow .55s; }
+    .card:hover { transform: translateY(-8px); box-shadow: 0 30px 70px -30px rgba(0,0,0,0.9); }
+    .shine { position: relative; overflow: hidden; }
+    .shine::after { content: ''; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
+                    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.42), transparent);
+                    transform: skewX(-18deg); transition: left .75s cubic-bezier(.16,1,.3,1); }
+    .shine:hover::after { left: 120%; }
+
+    /* ---- rotating conic field ---- */
+    .ring { position: absolute; left: 50%; top: 50%; width: 1180px; height: 1180px; margin: -590px 0 0 -590px;
+            border-radius: 50%; pointer-events: none; filter: blur(64px); opacity: 0.75;
+            background: conic-gradient(from var(--ang),
+                        transparent 0deg, rgba(46,107,255,0.30) 62deg, transparent 142deg,
+                        rgba(138,231,250,0.22) 216deg, transparent 298deg, rgba(200,16,46,0.16) 340deg, transparent 360deg);
+            animation: spin 26s linear infinite; }
+    @keyframes spin { to { --ang: 360deg; } }
+
+    /* ---- poster rail ---- */
+    .psl { display: flex; width: max-content; animation: mqrun 78s linear infinite; }
+    .psl > span { display: flex; gap: 28px; padding-right: 28px; }
+    .pslwrap:hover .psl { animation-play-state: paused; }
+    .pcard { width: 284px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px;
+             transition: transform .55s cubic-bezier(.16,1,.3,1); }
+    .pcard:hover { transform: translateY(-12px); }
+    .pcard img { transition: opacity .55s; opacity: 0.88; }
+    .pcard:hover img { opacity: 1; }
+
+    /* ---- marquee ---- */
+    .mqwrap { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+              mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); }
+    .mq { display: flex; width: max-content; animation: mqrun 46s linear infinite; }
+    .mq > span { display: flex; align-items: center; gap: 56px; padding-right: 56px; }
+    @keyframes mqrun { to { transform: translateX(-50%); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important;
+                               transition-duration: 1ms !important; }
+      .rv, .ki, .bar, .pop, .mask, .plx, .zoom { opacity: 1 !important; transform: none !important;
+                                                 filter: none !important; clip-path: none !important; }
+      .aura, .grain::after { display: none; }
+    }
+  </style>
+
+</head><body>
+
+
+
+<div style="--accent: #2E6BFF; --red: #C8102E; --blue: #003DA5; background: #07090F; color: #F0F2F6; width: 1440px;">
+
+  <div class="rail"><b></b><u></u><b></b></div>
+
+
+  <!-- ============ HEADER ============ -->
+  <header style="position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; height: 76px; padding: 0 56px; border-bottom: 1px solid rgba(255,255,255,0.09); background: rgba(7,9,15,0.82);">
+    <img src="../ddam-logo.png" alt="Dentsu Data Artist Mongol" style="height: 30px; width: auto; display: block;">
+    <nav style="display: flex; align-items: center; gap: 34px;">
+      <span style="font-size: 14.5px; font-weight: 500; color: #F0F2F6;">Services</span>
+      <span style="font-size: 14.5px; font-weight: 500; color: #98A2B3;">About Us</span>
+      <span style="font-size: 14.5px; font-weight: 500; color: #98A2B3;">News</span>
+      <span style="font-size: 14.5px; font-weight: 500; color: #98A2B3;">Careers</span>
+      <span style="display: flex; align-items: center; gap: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--accent); font-size: 14.5px; font-weight: 500; color: var(--accent);">
+        Contact
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M8 3l4 4-4 4"></path></svg>
+      </span>
+    </nav>
+  </header>
+
+  <!-- ============ 00 — OPENING SCENE ============ -->
+  <section class="grain" style="position: relative; display: flex; flex-direction: column; justify-content: center; height: 880px; padding: 0 96px; overflow: hidden;">
+    <div class="aura"><i></i><i></i><i></i><i></i></div>
+    <img class="plx" src="../hero-network.jpg" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 32%; opacity: 0.42;">
+    <div style="position: absolute; inset: 0; background: linear-gradient(90deg, #07090F 6%, rgba(7,9,15,0.88) 46%, rgba(7,9,15,0.34) 100%);"></div>
+    <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,9,15,0.62) 0%, rgba(7,9,15,0) 30%, #07090F 100%);"></div>
+
+    <div style="position: relative;">
+      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 34px;">
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.22em; color: var(--accent);">00</span>
+        <span style="display: block; width: 44px; height: 1px; background: rgba(255,255,255,0.28);"></span>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: #98A2B3;">Dentsu Data Artist Mongol</span>
+      </div>
+
+      <h1 style="margin: 0; max-width: 900px; font-family: 'Newsreader', Georgia, 'Times New Roman', serif; font-size: 96px; font-weight: 300; line-height: 0.98; letter-spacing: -0.028em; color: #FFFFFF; text-wrap: balance;">
+        <span class="kw"><span class="ki" style="animation-delay: 0.10s;">Intelligence,</span></span>
+        <span class="kw"><span class="ki" style="animation-delay: 0.24s;">engineered in</span></span>
+        <span class="kw"><span class="ki" style="animation-delay: 0.38s;"><em style="font-weight: 300; font-style: italic; color: var(--accent);">Ulaanbaatar</em>.</span></span>
+      </h1>
+
+      <p style="margin: 36px 0 0; max-width: 560px; font-size: 18px; line-height: 1.68; color: #B6C0CE; text-wrap: pretty;">
+        157 specialists in AI development, data engineering and digital marketing — building
+        production systems for Dentsu Digital and its clients in Japan and across APAC.
+      </p>
+    </div>
+
+    <div style="position: absolute; left: 96px; bottom: 44px; display: flex; align-items: center; gap: 14px;">
+      <svg width="18" height="30" viewBox="0 0 18 30" fill="none" stroke="currentColor" stroke-width="1.3" style="color: var(--accent);">
+        <rect x="0.65" y="0.65" width="16.7" height="28.7" rx="8.35"></rect>
+        <path d="M9 8v5" stroke-linecap="round"></path>
+      </svg>
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #6B7788;">Scroll — five chapters</span>
+    </div>
+  </section>
+
+  <!-- ============ 01 — THE COMPANY ============ -->
+  <section style="padding: 128px 96px 144px; border-top: 1px solid rgba(255,255,255,0.09);">
+    <div style="display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); gap: 96px; max-width: 1248px; margin: 0 auto;">
+
+      <div class="hold" style="display: flex; flex-direction: column; gap: 22px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.22em; color: var(--accent);">01</span>
+          <span style="display: block; width: 44px; height: 1px; background: rgba(255,255,255,0.22);"></span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #6B7788;">The company</span>
+        </div>
+        <h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-size: 52px; font-weight: 300; line-height: 1.06; letter-spacing: -0.024em; color: #FFFFFF; text-wrap: balance;">A hundred and fifty-seven people, in six divisions.</h2>
+        <p style="margin: 0; font-size: 16.5px; line-height: 1.74; color: #98A2B3; text-wrap: pretty;">
+          Not a sales office with delivery somewhere else. The engineers, the analysts and the operators are all in the same building in Ulaanbaatar.
+        </p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 56px;">
+        <div class="rv" style="display: flex; flex-direction: column; gap: 22px; padding: 36px 40px 40px; background: #0C1018; border: 1px solid rgba(255,255,255,0.09);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent);">Headcount by delivery division</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 15px;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <span style="width: 158px; flex-shrink: 0; font-size: 13.5px; color: #98A2B3;">Digital Marketing</span>
+              <span class="bar" style="display: block; flex-grow: 1; height: 16px; background: var(--accent);"></span>
+              <span style="width: 30px; flex-shrink: 0; text-align: right; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #F0F2F6;">68</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <span style="width: 158px; flex-shrink: 0; font-size: 13.5px; color: #98A2B3;">Solution</span>
+              <span style="display: block; flex-grow: 1; height: 16px; background: rgba(255,255,255,0.09);"><span class="bar" style="display: block; width: 60.3%; height: 100%; background: var(--accent); opacity: 0.84;"></span></span>
+              <span style="width: 30px; flex-shrink: 0; text-align: right; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #F0F2F6;">41</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <span style="width: 158px; flex-shrink: 0; font-size: 13.5px; color: #98A2B3;">Platform</span>
+              <span style="display: block; flex-grow: 1; height: 16px; background: rgba(255,255,255,0.09);"><span class="bar" style="display: block; width: 25%; height: 100%; background: var(--accent); opacity: 0.68;"></span></span>
+              <span style="width: 30px; flex-shrink: 0; text-align: right; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #F0F2F6;">17</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <span style="width: 158px; flex-shrink: 0; font-size: 13.5px; color: #98A2B3;">Global</span>
+              <span style="display: block; flex-grow: 1; height: 16px; background: rgba(255,255,255,0.09);"><span class="bar" style="display: block; width: 25%; height: 100%; background: var(--accent); opacity: 0.68;"></span></span>
+              <span style="width: 30px; flex-shrink: 0; text-align: right; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #F0F2F6;">17</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <span style="width: 158px; flex-shrink: 0; font-size: 13.5px; color: #98A2B3;">Operation</span>
+              <span style="display: block; flex-grow: 1; height: 16px; background: rgba(255,255,255,0.09);"><span class="bar" style="display: block; width: 16.2%; height: 100%; background: var(--accent); opacity: 0.52;"></span></span>
+              <span style="width: 30px; flex-shrink: 0; text-align: right; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #F0F2F6;">11</span>
+            </div>
+                      </div>
+        </div>
+
+        <div class="rv" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid rgba(255,255,255,0.09);">
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 30px 28px 8px 0;">
+            <span class="pop" style="font-family: 'Newsreader', Georgia, serif; font-size: 52px; font-weight: 300; line-height: 1; letter-spacing: -0.02em; color: #FFFFFF;">157</span>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #6B7788;">Specialists</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 30px 28px 8px;">
+            <span class="pop" style="font-family: 'Newsreader', Georgia, serif; font-size: 52px; font-weight: 300; line-height: 1; letter-spacing: -0.02em; color: #FFFFFF;">4</span>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #6B7788;">Service lines</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 30px 0 8px 28px;">
+            <span class="pop" style="font-family: 'Newsreader', Georgia, serif; font-size: 52px; font-weight: 300; line-height: 1; letter-spacing: -0.02em; color: #FFFFFF;">2018</span>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #6B7788;">Founded</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 02 — THE WORK ============ -->
+  <section style="padding: 128px 96px 144px; background: #0A0D14; border-top: 1px solid rgba(255,255,255,0.09);">
+    <div style="display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); gap: 96px; max-width: 1248px; margin: 0 auto;">
+
+      <div class="hold" style="display: flex; flex-direction: column; gap: 22px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.22em; color: var(--accent);">02</span>
+          <span style="display: block; width: 44px; height: 1px; background: rgba(255,255,255,0.22);"></span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #6B7788;">The work</span>
+        </div>
+        <h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-size: 52px; font-weight: 300; line-height: 1.06; letter-spacing: -0.024em; color: #FFFFFF; text-wrap: balance;">Four capabilities, one delivery team.</h2>
+        <p style="margin: 0; font-size: 16.5px; line-height: 1.74; color: #98A2B3; text-wrap: pretty;">
+          We take work from first prototype to running production system — without handing it between vendors.
+        </p>
+      </div>
+
+      <div style="display: flex; flex-direction: column;">
+
+        <div class="rv lift" style="display: flex; flex-direction: column; gap: 16px; padding: 0 0 52px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="color: var(--accent);"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="2"></rect><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4"></path><circle cx="12" cy="12" r="1.6"></circle></svg></span>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.16em; color: #6B7788;">01 / 04</span>
+          </div>
+          <h3 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-size: 34px; font-weight: 400; line-height: 1.16; letter-spacing: -0.02em; color: #FFFFFF;">AI Solution Development</h3>
+          <p style="margin: 0; font-size: 16px; line-height: 1.72; color: #98A2B3; text-wrap: pretty;">AI agents, LLM applications and workflow automation, built and operated by our AI Center and AINT groups — from first prototype through to production support.</p>
+        </div>
+
+        <div class="rv lift" style="display: flex; flex-direction: column; gap: 16px; padding: 52px 0; border-top: 1px solid rgba(255,255,255,0.09);">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="color: var(--accent);"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"></ellipse><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6"></path><path d="M5 12v6c0 1.66 3.13 3 7 3s7-1.34 7-3v-6"></path></svg></span>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.16em; color: #6B7788;">02 / 04</span>
+          </div>
+          <h3 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-size: 34px; font-weight: 400; line-height: 1.16; letter-spacing: -0.02em; color: #FFFFFF;">Data Engineering &amp; Analytics</h3>
+          <p style="margin: 0; font-size: 16px; line-height: 1.72; color: #98A2B3; text-wrap: pretty;">Pipelines, reporting infrastructure and analytics that turn campaign and business data into decisions leaders can act on — at the scale Japanese enterprise accounts demand.</p>
+        </div>
+
+        <div class="rv lift" style="display: flex; flex-direction: column; gap: 16px; padding: 52px 0; border-top: 1px solid rgba(255,255,255,0.09);">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="color: var(--accent);"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"></path><path d="M10 3v6.2L4.8 18a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 9.2V3"></path><path d="M7.6 15h8.8"></path></svg></span>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.16em; color: #6B7788;">03 / 04</span>
+          </div>
+          <h3 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-size: 34px; font-weight: 400; line-height: 1.16; letter-spacing: -0.02em; color: #FFFFFF;">Proof of Concept &amp; R&amp;D</h3>
+          <p style="margin: 0; font-size: 16px; line-height: 1.72; color: #98A2B3; text-wrap: pretty;">A standing R&amp;D group that prototypes what is next, so a technology is tested against your real constraints before anyone commits a budget to it.</p>
+        </div>
+
+        <div class="rv lift" style="display: flex; flex-direction: column; gap: 16px; padding: 52px 0 0; border-top: 1px solid rgba(255,255,255,0.09);">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="color: var(--accent);"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"></circle><circle cx="12" cy="12" r="4.5"></circle><circle cx="12" cy="12" r="1"></circle></svg></span>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.16em; color: #6B7788;">04 / 04</span>
+          </div>
+          <h3 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-size: 34px; font-weight: 400; line-height: 1.16; letter-spacing: -0.02em; color: #FFFFFF;">Digital Marketing</h3>
+          <p style="margin: 0; font-size: 16px; line-height: 1.72; color: #98A2B3; text-wrap: pretty;">Ad operations, reporting and AI-assisted creative production across Google, Amazon, Meta and the major social platforms — run by the largest team in the company.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 — THE GEOGRAPHY ============ -->
+  <section style="border-top: 1px solid rgba(255,255,255,0.09);">
+    <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch;">
+
+      <div style="display: flex; flex-direction: column; justify-content: center; gap: 26px; padding: 124px 72px 128px 96px; background: #091426;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.22em; color: var(--accent);">03</span>
+          <span style="display: block; width: 44px; height: 1px; background: rgba(255,255,255,0.22);"></span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #6B7788;">The geography</span>
+        </div>
+
+        <h2 class="rv" style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-size: 62px; font-weight: 300; line-height: 1.04; letter-spacing: -0.026em; color: #FFFFFF; text-wrap: balance;">One time zone from Tokyo.</h2>
+
+        <p style="margin: 0; max-width: 560px; font-size: 17px; line-height: 1.74; color: #98A2B3; text-wrap: pretty;">
+          One network away from everywhere. Ulaanbaatar sits an hour behind Tokyo — close enough to work the same day as our Japanese clients, far enough to build a deep engineering bench of our own. Through the Dentsu network, that bench reaches APAC and EMEA.
+        </p>
+
+        <div class="rv" style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px;">
+          <span style="padding: 12px 20px; border: 1px solid var(--accent); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #FFFFFF;">Ulaanbaatar · HQ</span>
+          <span style="padding: 12px 20px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #98A2B3;">Tokyo · Parent</span>
+          <span style="padding: 12px 20px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #98A2B3;">APAC &amp; EMEA</span>
+        </div>
+      </div>
+
+      <div style="position: relative; min-height: 560px; overflow: hidden; background: #091426;">
+        <img class="zoom" src="../globe-reach.jpg" alt="Connections from Ulaanbaatar to Japan, APAC and EMEA" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 46% 50%; opacity: 0.66;">
+        <div style="position: absolute; inset: 0; background: linear-gradient(90deg, #091426 0%, rgba(9,20,38,0.42) 38%, rgba(9,20,38,0) 78%);"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 04 — THE BACKING ============ -->
+  <section style="padding: 128px 96px 144px; background: #0A0D14; border-top: 1px solid rgba(255,255,255,0.09);">
+    <div style="max-width: 1248px; margin: 0 auto;">
+      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 44px;">
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.22em; color: var(--accent);">04</span>
+        <span style="display: block; width: 44px; height: 1px; background: rgba(255,255,255,0.22);"></span>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #6B7788;">The backing</span>
+      </div>
+
+      <h2 class="rv" style="margin: 0 0 56px; font-family: 'Newsreader', Georgia, serif; font-size: 62px; font-weight: 300; line-height: 1.06; letter-spacing: -0.026em; color: #FFFFFF; text-wrap: balance;">Backed by dentsu. Run from Mongolia.</h2>
+
+      <div class="rv" style="display: flex; align-items: baseline; gap: 56px; padding: 34px 0; border-top: 1px solid rgba(255,255,255,0.16);">
+        <span style="width: 320px; flex-shrink: 0; font-family: 'Newsreader', Georgia, serif; font-size: 42px; font-weight: 300; letter-spacing: -0.02em; color: #FFFFFF;">dentsu</span>
+        <span style="width: 170px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">Global network</span>
+        <p style="margin: 0; flex-grow: 1; font-size: 16px; line-height: 1.7; color: #98A2B3;">One of the world's largest advertising and marketing networks.</p>
+      </div>
+
+      <div class="rv" style="display: flex; align-items: baseline; gap: 56px; padding: 34px 0; border-top: 1px solid rgba(255,255,255,0.09);">
+        <span style="width: 320px; flex-shrink: 0; font-family: 'Newsreader', Georgia, serif; font-size: 42px; font-weight: 300; letter-spacing: -0.02em; color: var(--accent);">Dentsu Digital</span>
+        <span style="width: 170px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);">Parent company</span>
+        <p style="margin: 0; flex-grow: 1; font-size: 16px; line-height: 1.7; color: #98A2B3;">Japan's leading digital marketing company. We build and operate alongside their teams every day, not at arm's length.</p>
+      </div>
+
+      <div class="rv" style="display: flex; align-items: baseline; gap: 56px; padding: 34px 0; border-top: 1px solid rgba(255,255,255,0.09); border-bottom: 1px solid rgba(255,255,255,0.09);">
+        <span style="width: 320px; flex-shrink: 0; font-family: 'Newsreader', Georgia, serif; font-size: 42px; font-weight: 300; letter-spacing: -0.02em; color: #FFFFFF;">DDAM</span>
+        <span style="width: 170px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">Delivery centre</span>
+        <p style="margin: 0; flex-grow: 1; font-size: 16px; line-height: 1.7; color: #98A2B3;">157 specialists in Ulaanbaatar covering AI, data, platform operations and digital marketing.</p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 44px; margin-top: 44px;">
+        <span style="flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">Platform partners</span>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 40px;">
+          <span style="font-size: 18px; font-weight: 500; color: #7A8698;">Amazon Ads</span>
+          <span style="font-size: 18px; font-weight: 500; color: #7A8698;">AWS</span>
+          <span style="font-size: 18px; font-weight: 500; color: #7A8698;">Google</span>
+          <span style="font-size: 18px; font-weight: 500; color: #7A8698;">Meta</span>
+          <span style="font-size: 18px; font-weight: 500; color: #7A8698;">OpenAI</span>
+          <span style="font-size: 18px; font-weight: 500; color: #7A8698;">Shopify</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ KINETIC DIVIDER ============ -->
+  <section style="padding: 46px 0; background: #0A0D14; border-top: 1px solid rgba(255,255,255,0.09); border-bottom: 1px solid rgba(255,255,255,0.09); overflow: hidden;">
+    <div class="mqwrap">
+      <div class="mq">
+        <span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Connected Intelligence</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Beyond Intelligence</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Unleashing AI Potential</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">AI Business Ideathon</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Empower Vision</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Build with AI · Operate with Agents</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Agentic AI Revo</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Commerce AI</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Creative × AI</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">The Future Begins With A Connection</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+        </span>
+        <span aria-hidden="true">
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Connected Intelligence</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Beyond Intelligence</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Unleashing AI Potential</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">AI Business Ideathon</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Empower Vision</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Build with AI · Operate with Agents</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Agentic AI Revo</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Commerce AI</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">Creative × AI</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 300; letter-spacing: -0.02em; color: #F0F2F6; white-space: nowrap;">The Future Begins With A Connection</span>
+          <span style="display: block; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent);"></span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 — THE LATEST ============ -->
+  <section style="padding: 128px 0 144px; border-top: 1px solid rgba(255,255,255,0.09);">
+    <div style="max-width: 1440px; margin: 0 auto 52px; padding: 0 96px;">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between;">
+        <div style="display: flex; flex-direction: column; gap: 22px;">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.22em; color: var(--accent);">05</span>
+            <span style="display: block; width: 44px; height: 1px; background: rgba(255,255,255,0.22);"></span>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #6B7788;">The latest</span>
+          </div>
+          <h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-size: 52px; font-weight: 300; line-height: 1.06; letter-spacing: -0.024em; color: #FFFFFF;">What we've been building</h2>
+        </div>
+        <span style="display: flex; align-items: center; gap: 8px; padding-bottom: 10px; font-size: 14.5px; font-weight: 500; color: var(--accent);">
+          All news
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M8 3l4 4-4 4"></path></svg>
+        </span>
+      </div>
+    </div>
+
+    <div class="mqwrap pslwrap">
+      <div class="psl">
+        <span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">Event</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.12.29</span>
+            </span>
+            <img src="../news-ny2026.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">IoC</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.12.27</span>
+            </span>
+            <img src="../news-amplify.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">IoC</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.12.22</span>
+            </span>
+            <img src="../news-mse.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">IoC</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.12.17</span>
+            </span>
+            <img src="../news-6mk.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">IoC</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.10.20</span>
+            </span>
+            <img src="../news-panasonic.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">Event</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.09.21</span>
+            </span>
+            <img src="../news-ideathon.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">Event</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.08.15</span>
+            </span>
+            <img src="../news-esport.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">IoC</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.07.28</span>
+            </span>
+            <img src="../news-aws.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">IoC</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.05.21</span>
+            </span>
+            <img src="../news-creative.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+        </span>
+        <span aria-hidden="true">
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">Event</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.12.29</span>
+            </span>
+            <img src="../news-ny2026.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">IoC</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.12.27</span>
+            </span>
+            <img src="../news-amplify.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">IoC</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.12.22</span>
+            </span>
+            <img src="../news-mse.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">IoC</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.12.17</span>
+            </span>
+            <img src="../news-6mk.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">IoC</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.10.20</span>
+            </span>
+            <img src="../news-panasonic.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">Event</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.09.21</span>
+            </span>
+            <img src="../news-ideathon.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">Event</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.08.15</span>
+            </span>
+            <img src="../news-esport.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">IoC</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.07.28</span>
+            </span>
+            <img src="../news-aws.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+          <span class="pcard">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <span style="padding: 3px 9px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">IoC</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #6B7788;">2025.05.21</span>
+            </span>
+            <img src="../news-creative.jpg" alt="" style="display: block; width: 100%; aspect-ratio: 520 / 735; object-fit: cover;">
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <div style="max-width: 1440px; margin: 38px auto 0; padding: 0 96px;">
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #6B7788;">Ignition of Curiosity &amp; company events · 2025 · hover to hold</span>
+    </div>
+  </section>
+
+  <!-- ============ CLOSING SCENE ============ -->
+  <section class="grain" style="position: relative; padding: 132px 96px 140px; border-top: 1px solid rgba(255,255,255,0.09); overflow: hidden;">
+    <div class="aura" style="opacity: 0.38;"><i></i><i></i><i></i><i></i></div>
+    <div class="ring"></div>
+    <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 26px; max-width: 860px; margin: 0 auto; text-align: center;">
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: #6B7788;">End of the story — start of yours</span>
+      <h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-size: 66px; font-weight: 300; line-height: 1.04; letter-spacing: -0.028em; color: #FFFFFF; text-wrap: balance;">Tell us what you're trying to build.</h2>
+      <p style="margin: 0; max-width: 620px; font-size: 17px; line-height: 1.7; color: #98A2B3; text-wrap: pretty;">Send us the problem, not a specification. We'll come back with how we'd approach it, who would work on it, and what a first phase looks like.</p>
+      <div style="display: flex; align-items: center; gap: 14px; margin-top: 20px;">
+        <span class="shine" style="display: flex; align-items: center; gap: 10px; padding: 17px 32px; background: var(--accent); color: #07090F; font-size: 15px; font-weight: 600;">
+          Contact us
+          <svg width="15" height="15" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M8 3l4 4-4 4"></path></svg>
+        </span>
+        <span style="display: flex; align-items: center; padding: 17px 32px; border: 1px solid rgba(255,255,255,0.22); color: #F0F2F6; font-size: 15px; font-weight: 500;">See open roles</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer style="padding: 72px 96px 38px; border-top: 1px solid rgba(255,255,255,0.09);">
+    <div style="max-width: 1248px; margin: 0 auto;">
+      <div style="display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(4, minmax(0, 1fr)); gap: 48px; padding-bottom: 52px; border-bottom: 1px solid rgba(255,255,255,0.09);">
+        <div style="display: flex; flex-direction: column; gap: 22px;">
+          <img src="../ddam-logo.png" alt="Dentsu Data Artist Mongol" style="height: 38px; width: auto; align-self: flex-start; display: block;">
+          <p style="margin: 0; max-width: 300px; font-size: 14px; line-height: 1.74; color: #7A8698;">
+            Dentsu Data Artist Mongol LLC<br>Altan Joloo Tower 6F, Seoul Street<br>Sukhbaatar District, Ulaanbaatar 14252<br>+976 77 11 33 26 · ddam@group.data-artist.com
+          </p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">Services</span>
+          <span style="font-size: 14px; color: #98A2B3;">AI Solution Development</span>
+          <span style="font-size: 14px; color: #98A2B3;">Data Engineering &amp; Analytics</span>
+          <span style="font-size: 14px; color: #98A2B3;">PoC &amp; R&amp;D</span>
+          <span style="font-size: 14px; color: #98A2B3;">Digital Marketing</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">About us</span>
+          <span style="font-size: 14px; color: #98A2B3;">Vision &amp; values</span>
+          <span style="font-size: 14px; color: #98A2B3;">Our Dentsu relationship</span>
+          <span style="font-size: 14px; color: #98A2B3;">Leadership &amp; specialists</span>
+          <span style="font-size: 14px; color: #98A2B3;">Corporate profile</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">Company</span>
+          <span style="font-size: 14px; color: #98A2B3;">News</span>
+          <span style="font-size: 14px; color: #98A2B3;">Careers</span>
+          <span style="font-size: 14px; color: #98A2B3;">Life at DDAM</span>
+          <span style="font-size: 14px; color: #98A2B3;">Contact</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">Legal</span>
+          <span style="font-size: 14px; color: #98A2B3;">Privacy policy</span>
+          <span style="font-size: 14px; color: #98A2B3;">Cookie policy</span>
+          <span style="font-size: 14px; color: #98A2B3;">Terms of use</span>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 28px;">
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: #6B7788;">© 2026 Dentsu Data Artist Mongol LLC. All rights reserved.</span>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">Data Driven Artistic Mongol</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+</body></html>

@@ -1,0 +1,100 @@
+# DDAM — corporate website
+
+The rebuild of the Dentsu Data Artist Mongol LLC corporate site.
+Next.js (App Router) + Tailwind CSS v4, English, fully static.
+
+## Running it
+
+```bash
+npm install
+npm run dev     # http://localhost:3000
+npm run build   # static export of all 14 routes
+```
+
+## Design direction
+
+The homepage is a port of **variant E — "Narrative scroll"**, locked on
+2026-08-27 after comparing five directions. The source artboard is
+`design/Main.dc.html`; the four rejected directions are kept in
+`design/archive/`.
+
+Its vocabulary:
+
+| | |
+|---|---|
+| Display | Newsreader (serif, light) |
+| Body | Instrument Sans |
+| Labels | IBM Plex Mono, uppercase, wide tracking |
+| Ground | `#07090F` near-black |
+| Accent | `#2E6BFF` |
+| Brand | Red `#C8102E`, Blue `#003DA5` — 2018 logo guideline |
+
+Tokens live in the `@theme` block at the top of `src/app/globals.css`.
+
+## Motion
+
+All of it is CSS. There is no animation JavaScript, no observer, no
+library — the page ships zero client components.
+
+- Reveals, bar growth, parallax and the zoom use `animation-timeline: view()`,
+  wrapped in `@supports` so browsers without scroll-driven animations simply
+  show the content rather than hiding it behind an animation that never runs.
+- The progress rail uses `animation-timeline: scroll(root block)`.
+- Chapter labels hold with `position: sticky` while their content scrolls past.
+- Everything is guarded by `prefers-reduced-motion: reduce`.
+
+Two things differ deliberately from the artboard, both for performance:
+
+1. **The conic field** (`.ring`) rotates the element with `transform` instead of
+   animating an `@property <angle>` inside the gradient. The artboard version
+   repainted a 1180px blurred conic gradient every frame; this version is
+   composited.
+2. **The grain** translates a single promoted layer via `translate3d` rather
+   than re-rasterising the turbulence tile per step.
+
+`html` uses `overflow-x: clip`, not `hidden`. `hidden` would make the root a
+scroll container, and every `view()` timeline would resolve against it instead
+of the document — freezing all reveals at opacity 0.
+
+## Content
+
+`src/lib/content.ts` is the single source of truth, and everything in it is
+sourced:
+
+- Headcount and division splits — timesheet Member Workload export, 2026-08-25
+  (161 rows less 4 system accounts = **157** people).
+- Address, phone, email, founding year — the live ddam.ai contact and about
+  pages.
+- Brand hex values — `ddam-logo/180808DDAM-Logo-1-1.pdf`.
+- News items — the 2023–2026 poster archive.
+
+Sections the PRD requires but for which no copy exists yet render an
+`AwaitingContent` block listing what is outstanding. **No placeholder prose is
+shipped anywhere on the site.** The full gap list lives in the project's
+discovery notes, which are kept out of this repo.
+
+### Two facts still to confirm before this goes public
+
+- **Founding year.** The site says 2018, from ddam.ai. The July 2024 Town Hall
+  poster says "8th Year Anniversary", which does not reconcile.
+- **Parent company.** ddam.ai names Data Artist Inc.; the PRD and these designs
+  name Dentsu Digital. The real chain is probably
+  dentsu → Dentsu Digital → Data Artist → DDAM.
+
+## Assets
+
+`public/img/` holds the web-optimised subset. Two source folders are
+**deliberately not in this repo** (see `.gitignore`):
+
+- `DDAM-posters/` — 562 MB of print-resolution artwork.
+- `DDAM-GIRLS-2026/` — employee photography with no recorded usage consent.
+
+The logo is still raster only. A vector logo is needed before launch; a 520px
+PNG in the header will not hold up at 4K.
+
+## Not built yet
+
+- Services mega menu (PRD asks for one; the header currently links straight
+  through to `/services`).
+- Leadership, timeline, case studies, careers listings, enquiry form.
+- CMS. News and Careers both imply ongoing editing by non-developers.

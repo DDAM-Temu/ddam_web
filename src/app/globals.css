@@ -1,0 +1,265 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DDAM design tokens — variant E ("Narrative scroll")
+   Locked 2026-08-27. Newsreader display / Instrument Sans body /
+   IBM Plex Mono labels on near-black.
+   ============================================================ */
+@theme {
+  --color-ink:         #07090F;
+  --color-ink-raised:  #0A0D14;
+  --color-ink-card:    #0C1018;
+  --color-ink-deep:    #091426;
+
+  --color-paper:       #F0F2F6;
+  --color-chalk:       #FFFFFF;
+  --color-muted:       #B6C0CE;
+  --color-soft:        #98A2B3;
+  --color-dim:         #7A8698;
+  --color-faint:       #6B7788;
+
+  --color-accent:      #2E6BFF;
+  --color-accent-lift: #6FA0FF;
+  --color-cyan:        #8AE7FA;
+
+  /* official brand palette — 2018 logo guideline */
+  --color-brand-red:   #C8102E;
+  --color-brand-blue:  #003DA5;
+
+  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-sans:    var(--font-instrument), "Helvetica Neue", Arial, sans-serif;
+  --font-mono:    var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
+
+  /* fluid type scale — the 1440px artboard is the upper bound */
+  --text-hero:    clamp(2.75rem, 6.7vw, 6rem);
+  --text-chapter: clamp(2rem, 3.6vw, 3.25rem);
+  --text-scene:   clamp(2.25rem, 4.6vw, 4.125rem);
+  --text-service: clamp(1.5rem, 2.4vw, 2.125rem);
+
+  /* page gutter — 96px on the artboard */
+  --gutter: clamp(1.5rem, 6vw, 6rem);
+}
+
+@layer base {
+  html {
+    background: var(--color-ink);
+    scroll-behavior: smooth;
+    /* the sticky header is 76px; anchors should not hide beneath it */
+    scroll-padding-top: 76px;
+    /* `clip`, not `hidden`: `hidden` would make this a scroll container and
+       every `animation-timeline: view()` would resolve against it instead of
+       the document, freezing all the reveals at opacity 0. */
+    overflow-x: clip;
+  }
+  body {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: var(--color-accent); color: var(--color-ink); }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 3px;
+  }
+}
+
+/* ============================================================
+   MOTION SYSTEM
+   Pure CSS, no scripting. Every effect is either composited
+   (transform/opacity) or scroll-driven, so nothing runs on the
+   main thread per frame.
+   ============================================================ */
+
+/* ---- the scroll mechanic: chapter labels hold while content moves ---- */
+.hold { position: sticky; top: 96px; align-self: start; }
+@media (max-width: 1023px) { .hold { position: static; } }
+
+/* ---- reveal on enter ------------------------------------------------
+   Guarded by @supports so that in browsers without scroll-driven
+   animations the content is simply visible — never hidden by a
+   reveal that will not fire.                                          */
+@keyframes ddam-reveal {
+  from { opacity: 0; transform: translate3d(0, 34px, 0) scale(0.985); filter: blur(5px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes ddam-bargrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes ddam-popin   { from { opacity: 0; transform: translate3d(0, 22px, 0) scale(0.9); } to { opacity: 1; transform: none; } }
+@keyframes ddam-wipe    { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes ddam-floaty  { from { transform: translate3d(0, -26px, 0) scale(1.06); } to { transform: translate3d(0, 26px, 0) scale(1.06); } }
+@keyframes ddam-zoomout { from { transform: scale(1.16); } to { transform: scale(1); } }
+
+@supports (animation-timeline: view()) {
+  .rv   { animation: ddam-reveal linear both;  animation-timeline: view(); animation-range: entry 6% cover 32%; }
+  .bar  { transform-origin: left center;
+          animation: ddam-bargrow cubic-bezier(.16,1,.3,1) both; animation-timeline: view(); animation-range: entry 18% cover 46%; }
+  .pop  { animation: ddam-popin cubic-bezier(.16,1,.3,1) both;  animation-timeline: view(); animation-range: entry 12% cover 38%; }
+  .mask { animation: ddam-wipe cubic-bezier(.16,1,.3,1) both;   animation-timeline: view(); animation-range: entry 10% cover 40%; }
+  .plx  { animation: ddam-floaty linear both;  animation-timeline: view(); animation-range: cover; }
+  .zoom { animation: ddam-zoomout linear both; animation-timeline: view(); animation-range: entry 0% cover 70%; }
+}
+
+/* ---- headline: line-by-line kinetic reveal (time-based, fires on load) ---- */
+.kw { display: block; overflow: hidden; padding-bottom: 0.08em; }
+.ki { display: block; animation: ddam-kinup 1.15s cubic-bezier(.16,1,.3,1) both; }
+@keyframes ddam-kinup {
+  from { transform: translate3d(0, 108%, 0); opacity: 0; filter: blur(7px); }
+  to   { transform: none; opacity: 1; filter: blur(0); }
+}
+
+/* ---- ambient aurora field -------------------------------------------
+   Three blurred blobs rather than the original four, each on its own
+   compositor layer. `contain: strict` stops the blur from forcing
+   layout/paint work on the section around it.                         */
+.aura {
+  position: absolute; inset: -30%;
+  pointer-events: none;
+  contain: strict;
+  filter: blur(90px);
+  opacity: 0.55;
+}
+.aura i {
+  position: absolute; display: block; border-radius: 50%;
+  mix-blend-mode: screen;
+  will-change: transform;
+  animation: ddam-drift 30s ease-in-out infinite alternate;
+}
+.aura i:nth-child(1) { width: 46%; height: 52%; left:  4%; top:  6%; background: #12408F; animation-duration: 26s; }
+.aura i:nth-child(2) { width: 38%; height: 44%; left: 46%; top: 30%; background: #0E6E8C; animation-duration: 34s; animation-delay: -8s; }
+.aura i:nth-child(3) { width: 30%; height: 36%; left: 66%; top:  2%; background: #3A1E6E; animation-duration: 30s; animation-delay: -16s; }
+.aura i:nth-child(4) { width: 22%; height: 26%; left: 22%; top: 52%; background: #7A1230; animation-duration: 38s; animation-delay: -4s; opacity: 0.7; }
+@keyframes ddam-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(6%, -7%, 0) scale(1.22); }
+}
+
+/* ---- film grain ------------------------------------------------------
+   One 220px SVG-turbulence tile, translated on the compositor. The
+   original re-rasterised the noise every step; this promotes it to its
+   own layer so the steps() animation is a pure transform.             */
+.grain { position: relative; }
+.grain::after {
+  content: ''; position: absolute; inset: -60px;
+  pointer-events: none; opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  will-change: transform;
+  animation: ddam-grain 900ms steps(5) infinite;
+}
+@keyframes ddam-grain {
+  0%   { transform: translate3d(0, 0, 0); }
+  20%  { transform: translate3d(-14px, 8px, 0); }
+  40%  { transform: translate3d(9px, -12px, 0); }
+  60%  { transform: translate3d(-7px, -9px, 0); }
+  80%  { transform: translate3d(12px, 6px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* ---- scroll progress rail -------------------------------------------
+   The fill is driven by the document scroll timeline; the six chapter
+   pips light up from their own section's view timeline, so the rail
+   reads as a table of contents rather than a plain progress bar.      */
+.rail {
+  position: fixed; left: 34px; top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  pointer-events: none;
+}
+@media (max-width: 1279px) { .rail { display: none; } }
+.rail b { display: block; width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.22); }
+.rail u {
+  position: relative; display: block;
+  width: 1px; height: 190px;
+  background: rgba(255,255,255,0.12);
+  overflow: hidden;
+}
+.rail u::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, var(--color-accent), var(--color-cyan));
+  transform-origin: top; transform: scaleY(0);
+}
+@supports (animation-timeline: scroll()) {
+  .rail u::before {
+    animation: ddam-railfill linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+@keyframes ddam-railfill { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+/* ---- rotating conic field -------------------------------------------
+   The artboard animated an @property <angle> inside a conic-gradient,
+   which repaints a 1180px blurred gradient every frame. Rotating the
+   element instead is visually identical and fully composited.        */
+.ring {
+  position: absolute; left: 50%; top: 50%;
+  width: 1180px; height: 1180px; margin: -590px 0 0 -590px;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(64px);
+  opacity: 0.75;
+  background: conic-gradient(
+    transparent 0deg, rgba(46,107,255,0.30) 62deg, transparent 142deg,
+    rgba(138,231,250,0.22) 216deg, transparent 298deg,
+    rgba(200,16,46,0.16) 340deg, transparent 360deg);
+  will-change: transform;
+  animation: ddam-spin 26s linear infinite;
+}
+@keyframes ddam-spin { to { transform: rotate(360deg); } }
+
+/* ---- interaction ---- */
+.lift { transition: transform .5s cubic-bezier(.16,1,.3,1), border-color .5s, background-color .5s; }
+.lift:hover { transform: translate3d(10px, 0, 0); }
+
+.card { transition: transform .55s cubic-bezier(.16,1,.3,1), box-shadow .55s; }
+.card:hover { transform: translate3d(0, -8px, 0); box-shadow: 0 30px 70px -30px rgba(0,0,0,0.9); }
+
+.shine { position: relative; overflow: hidden; }
+.shine::after {
+  content: ''; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.42), transparent);
+  transform: skewX(-18deg);
+  transition: left .75s cubic-bezier(.16,1,.3,1);
+}
+.shine:hover::after { left: 120%; }
+
+/* ---- marquee + poster rail ------------------------------------------
+   Both duplicate their track and translate by exactly -50%, so the loop
+   is seamless. The duplicate is aria-hidden.                          */
+.mqwrap {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+}
+.mq, .psl { display: flex; width: max-content; will-change: transform; }
+.mq  { animation: ddam-mqrun 46s linear infinite; }
+.psl { animation: ddam-mqrun 78s linear infinite; }
+.mq > span  { display: flex; align-items: center; gap: 56px; padding-right: 56px; }
+.psl > span { display: flex; gap: 28px; padding-right: 28px; }
+@keyframes ddam-mqrun { to { transform: translate3d(-50%, 0, 0); } }
+
+.pslwrap:hover .psl,
+.pslwrap:focus-within .psl { animation-play-state: paused; }
+
+.pcard { width: 284px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px;
+         transition: transform .55s cubic-bezier(.16,1,.3,1); }
+.pcard:hover { transform: translate3d(0, -12px, 0); }
+.pcard img { transition: opacity .55s; opacity: 0.88; }
+.pcard:hover img { opacity: 1; }
+
+/* ---- reduced motion: everything resolves to its end state ---- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+  .rv, .ki, .bar, .pop, .mask, .plx, .zoom {
+    opacity: 1 !important; transform: none !important;
+    filter: none !important; clip-path: none !important;
+  }
+  .aura, .ring { display: none; }
+  .grain::after { display: none; }
+}

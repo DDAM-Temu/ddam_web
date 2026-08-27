@@ -1,0 +1,15 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "DDAM Homepage — desktop 1440", "x": 0, "y": 0, "w": 1440, "h": 6491, "expand": "fill" }
+  ],
+  "annotations": [
+    {
+      "id": "locked",
+      "x": 0,
+      "y": -320,
+      "w": 860,
+      "text": "DDAM HOMEPAGE — locked direction.\n\nNewsreader serif on a near-black ground, told as five chapters. Each chapter's title column holds while its content scrolls past; blocks resolve as they enter view; the events rail slides on a loop and pauses when you hover it. All of it is pure CSS — sticky positioning, scroll-driven animation and @property. No scripting, so it ports straight into the Next.js build.\n\nEXPAND THIS ARTBOARD to feel the scroll. On the canvas it sits still.\n\nEvery fact on the page is verified: 157 specialists, the five delivery divisions and their sizes, the four service lines, founded 2018, and the real address, phone and email from ddam.ai. The nine event posters each carry the date printed on the poster itself.\n\nStill open: the Ideathon date (the poster says 09/21-09/24, the announcement PDF said 09/10), and whether the parent company reads as Dentsu Digital or Data Artist Inc.\n\nThe four rejected directions are kept in design/archive/.\n\nNext: mobile, the Services mega menu, and a token sheet — all still to be built in this language."
+    }
+  ],
+  "launch": { "view": "focused", "file": "Main.dc.html" }
+}

@@ -1,0 +1,58 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# ---- DDAM source assets (kept local, not in the repo) -------------------
+# Poster archive: 562 MB of print PDFs and full-res artwork.
+DDAM-posters/
+# Employee photography: no written usage consent is recorded for any of it.
+DDAM-GIRLS-2026/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# ---- internal documents (this repo is public) ---------------------------
+# Full 157-person roster from the internal timesheet export.
+# Discovery notes: named client accounts, photo-consent gaps, open questions.
+docs/
+# Product requirements document.
+*.docx

@@ -1,0 +1,346 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap">
+  <style>
+    html, body { margin: 0; padding: 0; background: #06080C; min-height: 100%; }
+    body { font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    * { box-sizing: border-box; }
+    a { color: #2E6BFF; text-decoration: none; }
+    a:hover { color: #7FA5FF; }
+  </style>
+</helmet>
+
+<div style="--accent: {{accent}}; --red: #C8102E; background: #06080C; background-image: linear-gradient(rgba(255,255,255,0.030) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.030) 1px, transparent 1px); background-size: 48px 48px; color: #E6EAF0; width: 1440px;">
+
+  <!-- ============ HEADER ============ -->
+  <header style="display: flex; align-items: center; justify-content: space-between; height: 64px; padding: 0 40px; border-bottom: 1px solid rgba(255,255,255,0.10); background: rgba(6,8,12,0.9);">
+    <div style="display: flex; align-items: center; gap: 28px;">
+      <img src="./ddam-logo.png" alt="Dentsu Data Artist Mongol" style="height: 26px; width: auto; display: block;">
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">Ulaanbaatar · UTC+8</span>
+    </div>
+    <nav style="display: flex; align-items: center; gap: 30px;">
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; letter-spacing: 0.04em; color: #E6EAF0;">services</span>
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; letter-spacing: 0.04em; color: #8792A3;">about</span>
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; letter-spacing: 0.04em; color: #8792A3;">news</span>
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; letter-spacing: 0.04em; color: #8792A3;">careers</span>
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; letter-spacing: 0.04em; color: #8792A3;">contact</span>
+      <span style="display: flex; align-items: center; gap: 8px; padding: 9px 16px; border: 1px solid var(--accent); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.04em; color: var(--accent);">
+        start_a_project
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M8 3l4 4-4 4"></path></svg>
+      </span>
+    </nav>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section style="padding: 84px 40px 76px; border-bottom: 1px solid rgba(255,255,255,0.10);">
+    <div style="display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 88px; align-items: center; max-width: 1360px; margin: 0 auto;">
+
+      <div style="display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="display: block; width: 8px; height: 8px; background: var(--accent);"></span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #8792A3;">Dentsu Data Artist Mongol</span>
+        </div>
+        <h1 style="margin: 26px 0 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 56px; font-weight: 500; line-height: 1.08; letter-spacing: -0.04em; color: #FFFFFF;">
+          Intelligence,<br>engineered in<br><span style="color: var(--accent);">Ulaanbaatar</span>.
+        </h1>
+        <p style="margin: 30px 0 0; max-width: 540px; font-size: 16.5px; line-height: 1.7; color: #8792A3; text-wrap: pretty;">
+          157 specialists in AI development, data engineering and digital marketing — building
+          production systems for Dentsu Digital and its clients in Japan and across APAC.
+        </p>
+        <div style="display: flex; align-items: center; gap: 12px; margin-top: 40px;">
+          <span style="display: flex; align-items: center; gap: 10px; padding: 15px 26px; background: var(--accent); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13.5px; font-weight: 500; color: #06080C;">
+            start_a_project
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M8 3l4 4-4 4"></path></svg>
+          </span>
+          <span style="display: flex; align-items: center; padding: 15px 26px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13.5px; color: #E6EAF0;">view_services</span>
+        </div>
+      </div>
+
+      <!-- live org shape, drawn from the roster -->
+      <div style="display: flex; flex-direction: column; gap: 20px; padding: 30px 32px 32px; background: rgba(10,14,21,0.86); border: 1px solid rgba(255,255,255,0.10);">
+        <div style="display: flex; align-items: baseline; justify-content: space-between;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);">Headcount by delivery division</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 13px;">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span style="width: 152px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: #8792A3;">Digital Marketing</span>
+            <span style="display: block; flex-grow: 1; height: 15px; background: var(--accent);"></span>
+            <span style="width: 30px; flex-shrink: 0; text-align: right; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: #E6EAF0;">68</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span style="width: 152px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: #8792A3;">Solution</span>
+            <span style="display: block; flex-grow: 1; height: 15px; background: rgba(255,255,255,0.10);"><span style="display: block; width: 60.3%; height: 100%; background: var(--accent); opacity: 0.82;"></span></span>
+            <span style="width: 30px; flex-shrink: 0; text-align: right; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: #E6EAF0;">41</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span style="width: 152px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: #8792A3;">Platform</span>
+            <span style="display: block; flex-grow: 1; height: 15px; background: rgba(255,255,255,0.10);"><span style="display: block; width: 25%; height: 100%; background: var(--accent); opacity: 0.66;"></span></span>
+            <span style="width: 30px; flex-shrink: 0; text-align: right; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: #E6EAF0;">17</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span style="width: 152px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: #8792A3;">Global</span>
+            <span style="display: block; flex-grow: 1; height: 15px; background: rgba(255,255,255,0.10);"><span style="display: block; width: 25%; height: 100%; background: var(--accent); opacity: 0.66;"></span></span>
+            <span style="width: 30px; flex-shrink: 0; text-align: right; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: #E6EAF0;">17</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span style="width: 152px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: #8792A3;">Operation</span>
+            <span style="display: block; flex-grow: 1; height: 15px; background: rgba(255,255,255,0.10);"><span style="display: block; width: 16.2%; height: 100%; background: var(--accent); opacity: 0.5;"></span></span>
+            <span style="width: 30px; flex-shrink: 0; text-align: right; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: #E6EAF0;">11</span>
+          </div>
+                  </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.10);">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; color: #6B7788;">Founded 2018 · 4 service lines</span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; color: #6B7788;">Source: internal roster</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ SERVICES TABLE ============ -->
+  <section style="padding: 76px 40px 84px; border-bottom: 1px solid rgba(255,255,255,0.10);">
+    <div style="max-width: 1360px; margin: 0 auto;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 34px;">
+        <div style="display: flex; align-items: baseline; gap: 18px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--accent);">01</span>
+          <h2 style="margin: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 30px; font-weight: 500; letter-spacing: -0.03em; color: #FFFFFF;">services</h2>
+        </div>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: #6B7788;">4 lines · one delivery team</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 56px minmax(0, 1.05fr) minmax(0, 1.55fr) minmax(0, 0.85fr); gap: 0; border-top: 1px solid rgba(255,255,255,0.16);">
+
+        <span style="padding: 13px 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #6B7788; border-bottom: 1px solid rgba(255,255,255,0.10);">#</span>
+        <span style="padding: 13px 20px 13px 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #6B7788; border-bottom: 1px solid rgba(255,255,255,0.10);">Service</span>
+        <span style="padding: 13px 20px 13px 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #6B7788; border-bottom: 1px solid rgba(255,255,255,0.10);">What we run</span>
+        <span style="padding: 13px 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #6B7788; border-bottom: 1px solid rgba(255,255,255,0.10);">Groups</span>
+
+        <span style="padding: 26px 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: var(--accent); border-bottom: 1px solid rgba(255,255,255,0.10);">01</span>
+        <span style="padding: 26px 20px 26px 0; font-size: 19px; font-weight: 500; line-height: 1.32; color: #FFFFFF; border-bottom: 1px solid rgba(255,255,255,0.10);">AI Solution Development</span>
+        <span style="padding: 26px 20px 26px 0; font-size: 15px; line-height: 1.62; color: #8792A3; border-bottom: 1px solid rgba(255,255,255,0.10);">AI agents, LLM applications and workflow automation — prototype through production support.</span>
+        <span style="padding: 26px 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; line-height: 1.7; color: #6B7788; border-bottom: 1px solid rgba(255,255,255,0.10);">AI Center<br>AINT</span>
+
+        <span style="padding: 26px 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: var(--accent); border-bottom: 1px solid rgba(255,255,255,0.10);">02</span>
+        <span style="padding: 26px 20px 26px 0; font-size: 19px; font-weight: 500; line-height: 1.32; color: #FFFFFF; border-bottom: 1px solid rgba(255,255,255,0.10);">Data Engineering &amp; Analytics</span>
+        <span style="padding: 26px 20px 26px 0; font-size: 15px; line-height: 1.62; color: #8792A3; border-bottom: 1px solid rgba(255,255,255,0.10);">Pipelines, reporting infrastructure and analytics at the scale Japanese enterprise accounts demand.</span>
+        <span style="padding: 26px 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; line-height: 1.7; color: #6B7788; border-bottom: 1px solid rgba(255,255,255,0.10);">Dev&amp;CS<br>Project</span>
+
+        <span style="padding: 26px 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: var(--accent); border-bottom: 1px solid rgba(255,255,255,0.10);">03</span>
+        <span style="padding: 26px 20px 26px 0; font-size: 19px; font-weight: 500; line-height: 1.32; color: #FFFFFF; border-bottom: 1px solid rgba(255,255,255,0.10);">Proof of Concept &amp; R&amp;D</span>
+        <span style="padding: 26px 20px 26px 0; font-size: 15px; line-height: 1.62; color: #8792A3; border-bottom: 1px solid rgba(255,255,255,0.10);">Prototypes that test a technology against your real constraints before a budget is committed.</span>
+        <span style="padding: 26px 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; line-height: 1.7; color: #6B7788; border-bottom: 1px solid rgba(255,255,255,0.10);">R&amp;D</span>
+
+        <span style="padding: 26px 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: var(--accent); border-bottom: 1px solid rgba(255,255,255,0.10);">04</span>
+        <span style="padding: 26px 20px 26px 0; font-size: 19px; font-weight: 500; line-height: 1.32; color: #FFFFFF; border-bottom: 1px solid rgba(255,255,255,0.10);">Digital Marketing</span>
+        <span style="padding: 26px 20px 26px 0; font-size: 15px; line-height: 1.62; color: #8792A3; border-bottom: 1px solid rgba(255,255,255,0.10);">Ad operations, reporting and AI-assisted creative across Google, Amazon, Meta and the major social platforms.</span>
+        <span style="padding: 26px 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; line-height: 1.7; color: #6B7788; border-bottom: 1px solid rgba(255,255,255,0.10);">Ads Reporting<br>AI Creative Ops</span>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GLOBAL REACH — DRAWN ============ -->
+  <section style="padding: 76px 40px 84px; border-bottom: 1px solid rgba(255,255,255,0.10);">
+    <div style="max-width: 1360px; margin: 0 auto;">
+      <div style="display: flex; align-items: baseline; gap: 18px; margin-bottom: 34px;">
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--accent);">02</span>
+        <h2 style="margin: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 30px; font-weight: 500; letter-spacing: -0.03em; color: #FFFFFF;">global_reach</h2>
+      </div>
+
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 72px; align-items: center;">
+        <div style="display: flex; flex-direction: column; gap: 22px;">
+          <p style="margin: 0; font-size: 24px; font-weight: 450; line-height: 1.36; letter-spacing: -0.015em; color: #FFFFFF; text-wrap: balance;">One time zone from Tokyo. One network away from everywhere.</p>
+          <p style="margin: 0; font-size: 15.5px; line-height: 1.72; color: #8792A3; text-wrap: pretty;">
+            Ulaanbaatar sits an hour behind Tokyo — close enough to work the same day as our Japanese clients, far enough to build a deep engineering bench of our own. Through the Dentsu network, that bench reaches APAC and EMEA.
+          </p>
+        </div>
+
+        <div style="padding: 34px 36px 30px; background: rgba(10,14,21,0.86); border: 1px solid rgba(255,255,255,0.10);">
+          <svg viewBox="0 0 720 260" fill="none" aria-label="Ulaanbaatar connects to Tokyo, APAC and EMEA" style="display: block; width: 100%; height: auto; overflow: visible;">
+            <line x1="0" y1="130" x2="720" y2="130" stroke="rgba(255,255,255,0.10)" stroke-width="1"></line>
+            <path d="M150 130 C 250 40, 350 40, 430 130" style="stroke: var(--accent)" stroke-width="1.4" stroke-dasharray="4 4"></path>
+            <path d="M150 130 C 280 210, 430 220, 600 190" stroke="rgba(255,255,255,0.24)" stroke-width="1.2" stroke-dasharray="4 4"></path>
+            <path d="M150 130 C 110 60, 60 50, 30 70" stroke="rgba(255,255,255,0.24)" stroke-width="1.2" stroke-dasharray="4 4"></path>
+
+            <circle cx="150" cy="130" r="9" fill="#C8102E"></circle>
+            <circle cx="150" cy="130" r="19" stroke="#C8102E" stroke-width="1" opacity="0.5"></circle>
+            <text x="150" y="171" text-anchor="middle" fill="#FFFFFF" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="500">ULAANBAATAR</text>
+            <text x="150" y="189" text-anchor="middle" fill="#6B7788" font-family="IBM Plex Mono, monospace" font-size="11">UTC+8 · HQ</text>
+
+            <circle cx="430" cy="130" r="7" style="fill: var(--accent)"></circle>
+            <text x="430" y="112" text-anchor="middle" fill="#FFFFFF" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="500">TOKYO</text>
+            <text x="430" y="167" text-anchor="middle" fill="#6B7788" font-family="IBM Plex Mono, monospace" font-size="11">UTC+9 · Dentsu Digital</text>
+
+            <circle cx="600" cy="190" r="5" fill="rgba(255,255,255,0.5)"></circle>
+            <text x="600" y="216" text-anchor="middle" fill="#8792A3" font-family="IBM Plex Mono, monospace" font-size="11.5">APAC</text>
+
+            <circle cx="30" cy="70" r="5" fill="rgba(255,255,255,0.5)"></circle>
+            <text x="30" y="52" text-anchor="middle" fill="#8792A3" font-family="IBM Plex Mono, monospace" font-size="11.5">EMEA</text>
+
+            <text x="290" y="42" text-anchor="middle" style="fill: var(--accent)" font-family="IBM Plex Mono, monospace" font-size="11">+1h · same working day</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GROUP NETWORK — LINEAGE ============ -->
+  <section style="padding: 76px 40px 84px; border-bottom: 1px solid rgba(255,255,255,0.10);">
+    <div style="max-width: 1360px; margin: 0 auto;">
+      <div style="display: flex; align-items: baseline; gap: 18px; margin-bottom: 40px;">
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--accent);">03</span>
+        <h2 style="margin: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 30px; font-weight: 500; letter-spacing: -0.03em; color: #FFFFFF;">group_network</h2>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; align-items: stretch;">
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 32px 32px 34px; border: 1px solid rgba(255,255,255,0.10);">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">tier_00 · global network</span>
+          <span style="font-size: 28px; font-weight: 500; letter-spacing: -0.025em; color: #FFFFFF;">dentsu</span>
+          <p style="margin: 0; font-size: 14.5px; line-height: 1.64; color: #8792A3;">One of the world's largest advertising and marketing networks.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 32px 32px 34px; border: 1px solid rgba(255,255,255,0.10); border-left: none;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">tier_01 · parent company</span>
+          <span style="font-size: 28px; font-weight: 500; letter-spacing: -0.025em; color: #FFFFFF;">Dentsu Digital</span>
+          <p style="margin: 0; font-size: 14.5px; line-height: 1.64; color: #8792A3;">Japan's leading digital marketing company. We build and operate alongside their teams every day.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 32px 32px 34px; border: 1px solid var(--accent); border-left: none;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);">tier_02 · delivery centre</span>
+          <span style="font-size: 28px; font-weight: 500; letter-spacing: -0.025em; color: #FFFFFF;">DDAM</span>
+          <p style="margin: 0; font-size: 14.5px; line-height: 1.64; color: #8792A3;">157 specialists in Ulaanbaatar covering AI, data, platform operations and digital marketing.</p>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 40px; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.10);">
+        <span style="flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">platform_partners</span>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 34px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 14px; color: #6B7788;">amazon_ads</span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 14px; color: #6B7788;">aws</span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 14px; color: #6B7788;">google</span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 14px; color: #6B7788;">meta</span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 14px; color: #6B7788;">openai</span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 14px; color: #6B7788;">shopify</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LATEST UPDATES — CHANGELOG ============ -->
+  <section style="padding: 76px 40px 84px; border-bottom: 1px solid rgba(255,255,255,0.10);">
+    <div style="max-width: 1360px; margin: 0 auto;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 30px;">
+        <div style="display: flex; align-items: baseline; gap: 18px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--accent);">04</span>
+          <h2 style="margin: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 30px; font-weight: 500; letter-spacing: -0.03em; color: #FFFFFF;">latest_updates</h2>
+        </div>
+        <span style="display: flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: var(--accent);">
+          all_news
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M8 3l4 4-4 4"></path></svg>
+        </span>
+      </div>
+
+      <div style="display: flex; align-items: baseline; gap: 32px; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.16);">
+        <span style="width: 96px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: #6B7788;">2025-10-20</span>
+        <span style="width: 64px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);">ioc</span>
+        <span style="flex-grow: 1; font-size: 17px; font-weight: 450; line-height: 1.42; color: #E6EAF0;">Unleashing AI potential with Panasonic and Ignition Point</span>
+        <span style="flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: #6B7788;">DDAM office · ASEM Sky</span>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 32px; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.10);">
+        <span style="width: 96px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: #6B7788;">2025-09-10</span>
+        <span style="width: 64px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);">event</span>
+        <span style="flex-grow: 1; font-size: 17px; font-weight: 450; line-height: 1.42; color: #E6EAF0;">AI Business Ideathon 2025</span>
+        <span style="flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: #6B7788;">Ulaanbaatar · online</span>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 32px; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.10); border-bottom: 1px solid rgba(255,255,255,0.10);">
+        <span style="width: 96px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: #6B7788;">2025-07-28</span>
+        <span style="width: 64px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);">ioc</span>
+        <span style="flex-grow: 1; font-size: 17px; font-weight: 450; line-height: 1.42; color: #E6EAF0;">Connected Intelligence: global collaboration with AWS and Amazon Ads</span>
+        <span style="flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: #6B7788;">DDAM office · Juulchin Terelj</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT CTA ============ -->
+  <section style="padding: 76px 40px 84px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 64px; max-width: 1360px; margin: 0 auto; padding: 48px 52px 50px; border: 1px solid var(--accent); background: rgba(10,14,21,0.86);">
+      <div style="display: flex; flex-direction: column; gap: 16px; max-width: 660px;">
+        <h2 style="margin: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 34px; font-weight: 500; line-height: 1.16; letter-spacing: -0.035em; color: #FFFFFF; text-wrap: balance;">Tell us what you're trying to build.</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.68; color: #8792A3; text-wrap: pretty;">Send us the problem, not a specification. We'll come back with how we'd approach it, who would work on it, and what a first phase looks like.</p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+        <span style="display: flex; align-items: center; gap: 10px; padding: 15px 26px; background: var(--accent); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13.5px; font-weight: 500; color: #06080C;">
+          contact_us
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M8 3l4 4-4 4"></path></svg>
+        </span>
+        <span style="display: flex; align-items: center; padding: 15px 26px; border: 1px solid rgba(255,255,255,0.18); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13.5px; color: #E6EAF0;">open_roles</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer style="padding: 56px 40px 34px; border-top: 1px solid rgba(255,255,255,0.10);">
+    <div style="max-width: 1360px; margin: 0 auto;">
+      <div style="display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(4, minmax(0, 1fr)); gap: 48px; padding-bottom: 46px;">
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <img src="./ddam-logo.png" alt="Dentsu Data Artist Mongol" style="height: 34px; width: auto; align-self: flex-start; display: block;">
+          <p style="margin: 0; max-width: 300px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; line-height: 1.8; color: #6B7788;">
+            Dentsu Data Artist Mongol LLC<br>Altan Joloo Tower 6F, Seoul Street<br>Sukhbaatar District, Ulaanbaatar 14252<br>+976 77 11 33 26 · ddam@group.data-artist.com
+          </p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">services</span>
+          <span style="font-size: 13.5px; color: #8792A3;">AI Solution Development</span>
+          <span style="font-size: 13.5px; color: #8792A3;">Data Engineering &amp; Analytics</span>
+          <span style="font-size: 13.5px; color: #8792A3;">PoC &amp; R&amp;D</span>
+          <span style="font-size: 13.5px; color: #8792A3;">Digital Marketing</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">about</span>
+          <span style="font-size: 13.5px; color: #8792A3;">Vision &amp; values</span>
+          <span style="font-size: 13.5px; color: #8792A3;">Our Dentsu relationship</span>
+          <span style="font-size: 13.5px; color: #8792A3;">Leadership &amp; specialists</span>
+          <span style="font-size: 13.5px; color: #8792A3;">Corporate profile</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">company</span>
+          <span style="font-size: 13.5px; color: #8792A3;">News</span>
+          <span style="font-size: 13.5px; color: #8792A3;">Careers</span>
+          <span style="font-size: 13.5px; color: #8792A3;">Life at DDAM</span>
+          <span style="font-size: 13.5px; color: #8792A3;">Contact</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">legal</span>
+          <span style="font-size: 13.5px; color: #8792A3;">Privacy policy</span>
+          <span style="font-size: 13.5px; color: #8792A3;">Cookie policy</span>
+          <span style="font-size: 13.5px; color: #8792A3;">Terms of use</span>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 26px; border-top: 1px solid rgba(255,255,255,0.10);">
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; color: #6B7788;">© 2026 Dentsu Data Artist Mongol LLC. All rights reserved.</span>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B7788;">Data Driven Artistic Mongol</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#2E6BFF","section":"Theme","options":["#2E6BFF","#2FD3F2","#8AE7FA","#FFFFFF"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#2E6BFF' };
+  }
+}
+</script>
+</body>
+</html>

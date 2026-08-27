@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    html, body { margin: 0; padding: 0; background: #05070E; min-height: 100%; }
+    body { font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    * { box-sizing: border-box; }
+    a { color: #2FD3F2; text-decoration: none; }
+    a:hover { color: #8AE7FA; }
+  </style>
+</helmet>
+
+<div style="--accent: {{accent}}; background: #05070E; color: #EEF2F8; width: 1440px;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; height: 76px; padding: 0 56px; border-bottom: 1px solid rgba(255,255,255,0.09);">
+    <img src="./ddam-logo.png" alt="Dentsu Data Artist Mongol" style="height: 34px; width: auto; display: block;">
+    <nav style="display: flex; align-items: center; gap: 34px;">
+      <span style="display: flex; align-items: center; gap: 6px; padding-bottom: 3px; border-bottom: 2px solid var(--accent); font-size: 14.5px; font-weight: 500; color: var(--accent);">Services<svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6L5 3 2 6"></path></svg></span>
+      <span style="display: flex; align-items: center; gap: 6px; font-size: 14.5px; font-weight: 500; color: #98A4B8;">About Us<svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 3 3-3"></path></svg></span>
+      <span style="font-size: 14.5px; font-weight: 500; color: #98A4B8;">News</span>
+      <span style="font-size: 14.5px; font-weight: 500; color: #98A4B8;">Careers</span>
+      <span style="font-size: 14.5px; font-weight: 500; color: #98A4B8;">Contact</span>
+    </nav>
+    <div style="display: flex; align-items: center; gap: 8px; padding: 11px 20px; border: 1px solid var(--accent); color: var(--accent); font-size: 13.5px; font-weight: 500;">
+      Start a project
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M8 3l4 4-4 4"></path></svg>
+    </div>
+  </header>
+
+  <!-- ============ MEGA MENU ============ -->
+  <div style="padding: 48px 56px 52px; background: #080C16; border-bottom: 1px solid rgba(255,255,255,0.16); box-shadow: 0 40px 80px -20px rgba(0,0,0,0.8);">
+    <div style="display: grid; grid-template-columns: minmax(0, 0.72fr) minmax(0, 2.28fr); gap: 64px; max-width: 1328px; margin: 0 auto;">
+
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent);">Services</span>
+        <p style="margin: 0; font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif; font-size: 22px; font-weight: 500; line-height: 1.3; letter-spacing: -0.02em; color: #EEF2F8; text-wrap: pretty;">From first prototype to running production system.</p>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 14px; font-weight: 500; color: var(--accent);">
+          All services
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M8 3l4 4-4 4"></path></svg>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px;">
+
+        <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 22px; border-top: 1px solid var(--accent);">
+          <span style="color: var(--accent);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="2"></rect><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4"></path><circle cx="12" cy="12" r="1.6"></circle></svg>
+          </span>
+          <span style="font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif; font-size: 17px; font-weight: 600; line-height: 1.3; letter-spacing: -0.015em; color: #FFFFFF;">AI Solution Development</span>
+          <p style="margin: 0; font-size: 13.5px; line-height: 1.62; color: #98A4B8;">Agents, LLM applications and workflow automation, built for production.</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,0.16);">
+          <span style="color: #98A4B8;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"></ellipse><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6"></path><path d="M5 12v6c0 1.66 3.13 3 7 3s7-1.34 7-3v-6"></path></svg>
+          </span>
+          <span style="font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif; font-size: 17px; font-weight: 600; line-height: 1.3; letter-spacing: -0.015em; color: #FFFFFF;">Data Engineering &amp; Analytics</span>
+          <p style="margin: 0; font-size: 13.5px; line-height: 1.62; color: #98A4B8;">Pipelines, reporting infrastructure and analytics at enterprise scale.</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,0.16);">
+          <span style="color: #98A4B8;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"></path><path d="M10 3v6.2L4.8 18a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 9.2V3"></path><path d="M7.6 15h8.8"></path></svg>
+          </span>
+          <span style="font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif; font-size: 17px; font-weight: 600; line-height: 1.3; letter-spacing: -0.015em; color: #FFFFFF;">Proof of Concept &amp; R&amp;D</span>
+          <p style="margin: 0; font-size: 13.5px; line-height: 1.62; color: #98A4B8;">Prototypes that test a technology against your real constraints first.</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,0.16);">
+          <span style="color: #98A4B8;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"></circle><circle cx="12" cy="12" r="4.5"></circle><circle cx="12" cy="12" r="1"></circle></svg>
+          </span>
+          <span style="font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif; font-size: 17px; font-weight: 600; line-height: 1.3; letter-spacing: -0.015em; color: #FFFFFF;">Digital Marketing</span>
+          <p style="margin: 0; font-size: 13.5px; line-height: 1.62; color: #98A4B8;">Ad operations, reporting and AI-assisted creative across every major platform.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div style="padding: 22px 56px 26px; background: #05070E;">
+    <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #4A5568;">Services mega menu — open state</span>
+  </div>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#2FD3F2","section":"Theme","options":["#2FD3F2","#1E6BE0","#003DA5","#C8102E"]}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#2FD3F2' };
+  }
+}
+</script>
+</body>
+</html>
