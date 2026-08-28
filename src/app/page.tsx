@@ -1,12 +1,23 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Aura, ChapterLabel, ScrollRail, TaglineMarquee } from "@/components/narrative";
-import { PosterRail } from "@/components/poster-rail";
+import {
+  Aura,
+  ChapterLabel,
+  ScrollRail,
+  TaglineMarquee,
+} from "@/components/narrative";
+import { PosterCarousel } from "@/components/poster-carousel";
 import { ScrollScrubVideo } from "@/components/scroll-video";
 import { CountUp } from "@/components/count-up";
 import { Intro } from "@/components/intro";
 import { ArrowRight, SERVICE_ICONS } from "@/components/icons";
-import { CORPORATE, DIVISIONS, GROUP_CHAIN, PLATFORM_PARTNERS, SERVICES } from "@/lib/content";
+import {
+  CORPORATE,
+  DIVISIONS,
+  GROUP_CHAIN,
+  PLATFORM_PARTNERS,
+  SERVICES,
+} from "@/lib/content";
 
 /** Delivery divisions only — Headquarters (3) is not a delivery function. */
 const DELIVERY = DIVISIONS.filter((d) => d.name !== "Headquarters");
@@ -22,7 +33,7 @@ export default function Home() {
       <Intro />
 
       {/* ============ 00 — OPENING SCENE ============ */}
-      <section className="hero grain clip-scope relative flex h-[min(88vh,880px)] min-h-[560px] flex-col justify-center overflow-hidden px-[var(--gutter)]">
+      <section className="hero grain clip-scope relative flex h-[min(88vh,880px)] min-h-[560px] flex-col justify-center overflow-hidden">
         <Aura />
         <Image
           src="/img/hero-network.jpg"
@@ -41,21 +52,21 @@ export default function Home() {
           className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,9,15,0.62)_0%,rgba(7,9,15,0)_30%,#07090F_100%)]"
         />
 
-        <div className="relative">
+        <div className="col relative">
           <div className="rv-clip mb-[34px]">
-            <ChapterLabel number="00" title={CORPORATE.legalName.replace(" LLC", "")} tone="soft" />
+            <ChapterLabel
+              number="00"
+              title={CORPORATE.legalName.replace(" LLC", "")}
+              tone="soft"
+            />
           </div>
 
           <h1 className="max-w-[900px] font-display text-[length:var(--text-hero)] leading-[0.98] font-light tracking-[-0.028em] text-balance text-chalk">
             <span className="kw">
-              <span className="ki">
-                Intelligence,
-              </span>
+              <span className="ki">Intelligence,</span>
             </span>
             <span className="kw">
-              <span className="ki">
-                engineered in
-              </span>
+              <span className="ki">engineered in</span>
             </span>
             <span className="kw">
               <span className="ki">
@@ -65,16 +76,16 @@ export default function Home() {
           </h1>
 
           <p className="rv-clip mt-9 max-w-[560px] text-lg leading-[1.68] text-pretty text-muted">
-            {CORPORATE.headcount} specialists in AI development, data engineering and digital
-            marketing — building production systems for Dentsu Digital and its clients in Japan
-            and across APAC.
+            {CORPORATE.headcount} specialists in AI development, data
+            engineering and digital marketing — building production systems for
+            Dentsu Digital and its clients in Japan and across APAC.
           </p>
         </div>
       </section>
 
       {/* ============ 01 — THE COMPANY ============ */}
-      <section className="border-t border-white/10 px-[var(--gutter)] pt-32 pb-36">
-        <div className="mx-auto grid max-w-[1248px] gap-14 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-24">
+      <section className="border-t border-white/10 pt-32 pb-36">
+        <div className="col grid gap-14 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-24">
           <div className="hold flex flex-col gap-[22px]">
             <ChapterLabel number="01" title="The company" />
             {/* Deliberately carries no headcount. The number is a fact that
@@ -86,8 +97,9 @@ export default function Home() {
               Every discipline, in one building.
             </h2>
             <p className="text-[16.5px] leading-[1.74] text-pretty text-soft">
-              Not a sales office with delivery somewhere else. The engineers, the analysts and the
-              operators are all in the same building in Ulaanbaatar.
+              Not a sales office with delivery somewhere else. The engineers,
+              the analysts and the operators are all in the same building in
+              Ulaanbaatar.
             </p>
           </div>
 
@@ -149,16 +161,16 @@ export default function Home() {
       </section>
 
       {/* ============ 02 — THE WORK ============ */}
-      <section className="border-t border-white/10 bg-ink-raised px-[var(--gutter)] pt-32 pb-36">
-        <div className="mx-auto grid max-w-[1248px] gap-14 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-24">
+      <section className="border-t border-white/10 bg-ink-raised pt-32 pb-36">
+        <div className="col grid gap-14 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-24">
           <div className="hold flex flex-col gap-[22px]">
             <ChapterLabel number="02" title="The work" />
             <h2 className="font-display text-[length:var(--text-chapter)] leading-[1.06] font-light tracking-[-0.024em] text-balance text-chalk">
               Four capabilities, one delivery team.
             </h2>
             <p className="text-[16.5px] leading-[1.74] text-pretty text-soft">
-              We take work from first prototype to running production system — without handing it
-              between vendors.
+              We take work from first prototype to running production system —
+              without handing it between vendors.
             </p>
           </div>
 
@@ -172,15 +184,20 @@ export default function Home() {
                 } ${i === SERVICES.length - 1 ? "pb-0" : ""}`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-accent">{SERVICE_ICONS[service.icon]}</span>
+                  <span className="text-accent">
+                    {SERVICE_ICONS[service.icon]}
+                  </span>
                   <span className="font-mono text-[11px] tracking-[0.16em] text-faint">
-                    {String(i + 1).padStart(2, "0")} / {String(SERVICES.length).padStart(2, "0")}
+                    {String(i + 1).padStart(2, "0")} /{" "}
+                    {String(SERVICES.length).padStart(2, "0")}
                   </span>
                 </div>
                 <h3 className="font-display text-[length:var(--text-service)] leading-[1.16] font-normal tracking-[-0.02em] text-chalk">
                   {service.name}
                 </h3>
-                <p className="text-base leading-[1.72] text-pretty text-soft">{service.blurb}</p>
+                <p className="text-base leading-[1.72] text-pretty text-soft">
+                  {service.blurb}
+                </p>
               </Link>
             ))}
           </div>
@@ -206,27 +223,32 @@ export default function Home() {
            `.zoom` is deliberately absent for the same reason — it magnified an
            already-upscaled frame, and the scrub is the motion here. */}
       <section className="clip-scope relative overflow-hidden border-t border-white/10 bg-ink-deep lg:flex lg:min-h-[820px] lg:items-center">
-        <div className="relative z-10 flex flex-col gap-[26px] px-[var(--gutter)] pt-32 pb-16 lg:max-w-[54%] lg:pb-32">
-          <ChapterLabel number="03" title="The geography" />
-          <h2 className="rv font-display text-[length:var(--text-scene)] leading-[1.04] font-light tracking-[-0.026em] text-balance text-chalk">
-            Ulaanbaatar to Tokyo, APAC and EMEA.
-          </h2>
-          <p className="max-w-[560px] text-[17px] leading-[1.74] text-pretty text-soft">
-            DDAM delivers from one place. An hour behind Tokyo and inside the dentsu network, a
-            full AI, data and marketing team sits in the same working day as Japan — and within
-            reach of APAC and EMEA.
-          </p>
-          <ul className="rv mt-2.5 flex flex-wrap gap-3">
-            <li className="border border-accent px-5 py-3 font-mono text-[11.5px] tracking-[0.14em] text-chalk uppercase">
-              Ulaanbaatar · HQ
-            </li>
-            <li className="border border-white/20 px-5 py-3 font-mono text-[11.5px] tracking-[0.14em] text-soft uppercase">
-              Tokyo · Parent
-            </li>
-            <li className="border border-white/20 px-5 py-3 font-mono text-[11.5px] tracking-[0.14em] text-soft uppercase">
-              APAC &amp; EMEA
-            </li>
-          </ul>
+        {/* The column, so this copy starts on the same line as every other
+            chapter; the text width is constrained inside it rather than on it,
+            which keeps the section itself free to run full-bleed. */}
+        <div className="col relative z-10 pt-32 pb-16 lg:pb-32">
+          <div className="flex flex-col gap-[22px] lg:max-w-[58%]">
+            <ChapterLabel number="03" title="The geography" />
+            <h2 className="rv font-display text-[length:var(--text-scene)] leading-[1.04] font-light tracking-[-0.026em] text-balance text-chalk">
+              Ulaanbaatar to Tokyo, APAC and EMEA.
+            </h2>
+            <p className="max-w-[560px] text-[17px] leading-[1.74] text-pretty text-soft">
+              DDAM delivers from one place. An hour behind Tokyo and inside the
+              dentsu network, a full AI, data and marketing team sits in the
+              same working day as Japan — and within reach of APAC and EMEA.
+            </p>
+            <ul className="rv mt-2.5 flex flex-wrap gap-3">
+              <li className="border border-accent px-5 py-3 font-mono text-[11.5px] tracking-[0.14em] text-chalk uppercase">
+                Ulaanbaatar · HQ
+              </li>
+              <li className="border border-white/20 px-5 py-3 font-mono text-[11.5px] tracking-[0.14em] text-soft uppercase">
+                Tokyo · Parent
+              </li>
+              <li className="border border-white/20 px-5 py-3 font-mono text-[11.5px] tracking-[0.14em] text-soft uppercase">
+                APAC &amp; EMEA
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div className="relative aspect-[16/10] w-full lg:absolute lg:inset-0 lg:aspect-auto lg:h-full">
@@ -248,22 +270,23 @@ export default function Home() {
       </section>
 
       {/* ============ 04 — THE BACKING ============ */}
-      <section className="border-t border-white/10 bg-ink-raised px-[var(--gutter)] pt-32 pb-36">
-        <div className="mx-auto max-w-[1248px]">
-          <div className="mb-11">
+      <section className="border-t border-white/10 bg-ink-raised pt-32 pb-36">
+        <div className="col">
+          <div className="mb-14 flex flex-col gap-[22px]">
             <ChapterLabel number="04" title="The backing" />
+            <h2 className="rv font-display text-[length:var(--text-scene)] leading-[1.06] font-light tracking-[-0.026em] text-balance text-chalk">
+              Backed by dentsu. Run from Mongolia.
+            </h2>
           </div>
-
-          <h2 className="rv mb-14 font-display text-[length:var(--text-scene)] leading-[1.06] font-light tracking-[-0.026em] text-balance text-chalk">
-            Backed by dentsu. Run from Mongolia.
-          </h2>
 
           <dl className="border-b border-white/10">
             {GROUP_CHAIN.map((tier, i) => (
               <div
                 key={tier.name}
                 className={`rv flex flex-col gap-3 py-[34px] lg:flex-row lg:items-baseline lg:gap-14 ${
-                  i === 0 ? "border-t border-white/20" : "border-t border-white/10"
+                  i === 0
+                    ? "border-t border-white/20"
+                    : "border-t border-white/10"
                 }`}
               >
                 <dt
@@ -280,7 +303,9 @@ export default function Home() {
                 >
                   {tier.role}
                 </span>
-                <dd className="grow text-base leading-[1.7] text-soft">{tier.note}</dd>
+                <dd className="grow text-base leading-[1.7] text-soft">
+                  {tier.note}
+                </dd>
               </div>
             ))}
           </dl>
@@ -305,7 +330,7 @@ export default function Home() {
 
       {/* ============ 05 — THE LATEST ============ */}
       <section className="border-t border-white/10 pt-32 pb-36">
-        <div className="mx-auto mb-13 max-w-[1440px] px-[var(--gutter)]">
+        <div className="col mb-13">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div className="flex flex-col gap-[22px]">
               <ChapterLabel number="05" title="The latest" />
@@ -323,38 +348,41 @@ export default function Home() {
           </div>
         </div>
 
-        <PosterRail />
+        <PosterCarousel />
       </section>
 
       {/* ============ CLOSING SCENE ============ */}
-      <section className="grain relative overflow-hidden border-t border-white/10 px-[var(--gutter)] pt-33 pb-35">
+      <section className="grain relative overflow-hidden border-t border-white/10 pt-32 pb-36">
         <Aura className="opacity-[0.38]" />
         <div className="ring" aria-hidden="true" />
-        <div className="relative mx-auto flex max-w-[860px] flex-col items-center gap-[26px] text-center">
-          <span className="font-mono text-[11px] tracking-[0.24em] text-faint uppercase">
-            End of the story — start of yours
-          </span>
-          <h2 className="font-display text-[length:var(--text-scene)] leading-[1.04] font-light tracking-[-0.028em] text-balance text-chalk">
-            Tell us what you&rsquo;re trying to build.
-          </h2>
-          <p className="max-w-[620px] text-[17px] leading-[1.7] text-pretty text-soft">
-            Send us the problem, not a specification. We&rsquo;ll come back with how we&rsquo;d
-            approach it, who would work on it, and what a first phase looks like.
-          </p>
-          <div className="mt-5 flex flex-col items-stretch gap-3.5 sm:flex-row sm:items-center">
-            <Link
-              href="/contact"
-              className="shine flex items-center justify-center gap-2.5 bg-accent px-8 py-[17px] text-[15px] font-semibold text-ink"
-            >
-              Contact us
-              <ArrowRight size={15} />
-            </Link>
-            <Link
-              href="/careers"
-              className="flex items-center justify-center border border-white/20 px-8 py-[17px] text-[15px] font-medium text-paper transition-colors hover:border-white/40"
-            >
-              See open roles
-            </Link>
+        <div className="col relative">
+          <div className="mx-auto flex max-w-[860px] flex-col items-center gap-[26px] text-center">
+            <span className="font-mono text-[11px] tracking-[0.24em] text-faint uppercase">
+              End of the story — start of yours
+            </span>
+            <h2 className="font-display text-[length:var(--text-scene)] leading-[1.04] font-light tracking-[-0.028em] text-balance text-chalk">
+              Tell us what you&rsquo;re trying to build.
+            </h2>
+            <p className="max-w-[620px] text-[17px] leading-[1.7] text-pretty text-soft">
+              Send us the problem, not a specification. We&rsquo;ll come back
+              with how we&rsquo;d approach it, who would work on it, and what a
+              first phase looks like.
+            </p>
+            <div className="mt-5 flex flex-col items-stretch gap-3.5 sm:flex-row sm:items-center">
+              <Link
+                href="/contact"
+                className="shine flex items-center justify-center gap-2.5 bg-accent px-8 py-[17px] text-[15px] font-semibold text-ink"
+              >
+                Contact us
+                <ArrowRight size={15} />
+              </Link>
+              <Link
+                href="/careers"
+                className="flex items-center justify-center border border-white/20 px-8 py-[17px] text-[15px] font-medium text-paper transition-colors hover:border-white/40"
+              >
+                See open roles
+              </Link>
+            </div>
           </div>
         </div>
       </section>

@@ -2,23 +2,37 @@
 
 import Image from "next/image";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { CoverflowCarousel } from "@/components/ui/coverflow-carousel";
 import { NEWS, type NewsItem } from "@/lib/content";
 
+/** 520 x 736 card crops — A-series posters, not squares. */
+const POSTER_ASPECT = 520 / 736;
+
+const SLIDES = NEWS.map((news) => ({
+  src: news.image,
+  alt: `${news.title} — event poster`,
+  title: news.title,
+  subtitle: `${news.kind} · ${news.date}`,
+}));
+
 /**
- * The chapter 05 rail. Cards run newest-first (that order comes from `NEWS`,
- * which sorts on `date`) and the rail's travel is tied to scroll position, not
- * to a timer — see the `.rail-scope` block in globals.css. A single track, no
- * duplicate: it no longer loops, so there is nothing to make seamless.
+ * Chapter 05, as a coverflow. Cards run newest-first — that order comes from
+ * `NEWS`, which sorts on `date` — so it opens on the most recent and turns back
+ * through time.
  *
- * Each card opens the full uncropped poster in a native <dialog> — so Escape,
- * the focus trap and focus restore all come from the platform rather than
- * from us.
+ * The carousel itself is the generic component in components/ui. What lives
+ * here is the part that is specific to posters: clicking the centre card opens
+ * the full uncropped artwork in a native `<dialog>`, so Escape, the focus trap
+ * and focus restore all come from the platform rather than from us. That
+ * matters more with a coverflow than it did with the old rail — the cards are
+ * cropped and raked away from the reader, so the lightbox is the only place the
+ * poster can actually be read.
  *
  * `item` is deliberately never cleared on close. The exit transition keeps the
  * dialog in the top layer while it fades, and unmounting the figure on the
  * `close` event would make the poster pop out a beat before the backdrop.
  */
-export function PosterRail() {
+export function PosterCarousel() {
   const [item, setItem] = useState<NewsItem | null>(null);
   const seq = useRef(0);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -29,51 +43,30 @@ export function PosterRail() {
     if (seq.current > 0) dialogRef.current?.showModal();
   }, [item]);
 
-  const open = useCallback((next: NewsItem) => {
+  const open = useCallback((index: number) => {
     seq.current += 1;
     // A new object identity every time, so re-opening the same poster still
     // re-runs the layout effect.
-    setItem({ ...next });
+    setItem({ ...NEWS[index] });
   }, []);
 
   const close = useCallback(() => dialogRef.current?.close(), []);
 
-  const cards = NEWS.map((news) => (
-    <button
-      key={news.image}
-      type="button"
-      className="pcard"
-      onClick={() => open(news)}
-      aria-label={`${news.title}, ${news.date} — view poster`}
-    >
-      <span className="flex items-center gap-3">
-        <span className="border border-white/20 px-2.5 py-[3px] font-mono text-[9.5px] tracking-[0.14em] text-accent uppercase">
-          {news.kind}
-        </span>
-        <span className="font-mono text-xs tracking-[0.06em] text-faint">{news.date}</span>
-      </span>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={news.image}
-        alt=""
-        loading="lazy"
-        decoding="async"
-        width={520}
-        height={735}
-        className="block aspect-[520/735] w-full object-cover"
-      />
-    </button>
-  ));
-
   return (
     <>
-      <div className="rail-scope">
-        <div className="mqwrap pslwrap">
-          <div className="psl">
-            <span>{cards}</span>
-          </div>
-        </div>
-      </div>
+      <CoverflowCarousel
+        slides={SLIDES}
+        cardAspect={POSTER_ASPECT}
+        cardWidth="clamp(190px, 26vw, 320px)"
+        onActivate={open}
+        showCaption
+        showNavigation
+        label="Recent events and initiatives"
+        cardClassName="border border-white/10"
+      />
+      <p className="mt-5 text-center font-mono text-[10.5px] tracking-[0.18em] text-faint uppercase">
+        Drag, or use the arrow keys — click the centre poster to open it
+      </p>
 
       <dialog
         ref={dialogRef}

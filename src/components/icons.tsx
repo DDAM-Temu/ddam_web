@@ -32,6 +32,29 @@ const strokeProps = {
   strokeLinejoin: "round" as const,
 };
 
+/** Carousel arrows. Same 24x24 stroke idiom as everything else here. */
+export function ChevronLeft({ className, size = 20 }: IconProps) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24" {...strokeProps}
+      className={className} aria-hidden="true"
+    >
+      <path d="M15 5l-7 7 7 7" />
+    </svg>
+  );
+}
+
+export function ChevronRight({ className, size = 20 }: IconProps) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24" {...strokeProps}
+      className={className} aria-hidden="true"
+    >
+      <path d="M9 5l7 7-7 7" />
+    </svg>
+  );
+}
+
 /**
  * Social glyphs, in the same 24x24 stroke idiom as SERVICE_ICONS so they sit
  * with the rest of the set rather than importing a brand-mark style of their
