@@ -73,6 +73,29 @@
    main thread per frame.
    ============================================================ */
 
+/* ---- the content column ---------------------------------------------
+   One column for every chapter, so labels, headings and copy all start on the
+   same vertical line the whole way down. 1248px is the artboard's own content
+   width and 96px its gutter — both taken from design/Main.dc.html.
+
+   The gutter lives INSIDE the max-width rather than on the section. That is
+   what lets a full-bleed section — chapter 03's globe, chapter 05's carousel —
+   run edge to edge while its copy still lines up with everything else. The
+   max-width is therefore the content width plus both gutters, so what is left
+   inside the padding is exactly 1248px.
+
+   Worth stating because it was the bug: putting a gutter on the section AND a
+   max-width on an inner wrapper does not give the same left edge as a gutter
+   alone. Once the viewport is wide enough for the max-width to bite, the
+   wrapper centres and adds its own offset on top of the gutter. Chapter
+   headings were landing at 86px, 96px and 105px on the same page.          */
+.col {
+  width: 100%;
+  margin-inline: auto;
+  max-width: calc(1248px + 2 * var(--gutter));
+  padding-inline: var(--gutter);
+}
+
 /* ---- the scroll mechanic: chapter labels hold while content moves ---- */
 .hold { position: sticky; top: 96px; align-self: start; }
 @media (max-width: 1023px) { .hold { position: static; } }
@@ -118,76 +141,48 @@
 }
 
 /* ---- headline: line-by-line kinetic reveal --------------------------
-   Time-based is the fallback only. Chapter 00 now sits below the opening
-   scene, so a reveal that fires on load has finished before the reader has
-   scrolled to it — it has to be driven by the section's own timeline. The
-   stagger lives here rather than in inline animation-delay, because delay
-   means nothing on a progress-based timeline; the offset has to be expressed
-   as a different animation-range per line. */
-.kw { display: block; overflow: hidden; padding-bottom: 0.08em; }
-.ki { display: block; animation: ddam-kinup 1.15s cubic-bezier(.16,1,.3,1) both; }
-.kw:nth-child(1) .ki { animation-delay: 0.10s; }
-.kw:nth-child(2) .ki { animation-delay: 0.24s; }
-.kw:nth-child(3) .ki { animation-delay: 0.38s; }
+   The lines carry no entrance animation. They had one, driven by the
+   section's own scroll timeline, and between that and the hover replay the
+   headline animated twice for one reader — so the scroll-driven reveal is
+   gone and hover is the only thing that plays it.
 
-/* These must come AFTER the base rule above: the `animation` shorthand resets
-   `animation-timeline` to `auto`, so setting the timeline before it silently
-   does nothing and the lines never hide. */
-@supports (animation-timeline: view()) {
-  .ki { animation-timeline: --clip-scope; }
-  .kw:nth-child(1) .ki { animation-range: entry 8%  cover 32%; }
-  .kw:nth-child(2) .ki { animation-range: entry 14% cover 38%; }
-  .kw:nth-child(3) .ki { animation-range: entry 20% cover 44%; }
+   `.ki` is therefore plain: the keyframes below exist purely for the hover
+   rule to switch on. `.kw` keeps its clip, which is what the lines rise out
+   of. The delays are the hover stagger and are inert until then. */
+.kw { display: block; overflow: hidden; padding-bottom: 0.08em; }
+.ki { display: block; }
+
+/* Hover plays it, and is now the only thing that does. Going from no
+   animation at all to a named one is itself a fresh animation, so each hover
+   restarts cleanly — which is why the duplicate `-replay` keyframes this used
+   to need are gone along with the scroll timeline that forced them.
+
+   The per-line delays have to live in here, after the shorthand and at higher
+   specificity. The `animation` shorthand resets `animation-delay` to 0, so
+   stating the stagger outside this rule silently loses it and all three lines
+   rise together — the same trap as `animation-timeline`, one property along.
+
+   Guarded on a real pointer: `:hover` can stick after a tap on a touchscreen,
+   which would strand the headline mid-reveal. */
+@media (hover: hover) and (pointer: fine) {
+  .hero h1:hover .ki { animation: ddam-kinup 1.15s cubic-bezier(.16,1,.3,1) both; }
+  .hero h1:hover .kw:nth-child(1) .ki { animation-delay: 0.10s; }
+  .hero h1:hover .kw:nth-child(2) .ki { animation-delay: 0.24s; }
+  .hero h1:hover .kw:nth-child(3) .ki { animation-delay: 0.38s; }
 }
 
 /* ---- chapter 00's arrival ---------------------------------------------
-   The ranges above are what an `entry`-anchored reveal wants when a section
-   is the first thing on the page. Chapter 00 is not: it sits below a full
-   viewport of opening scene, so its own `entry` phase begins at scroll 0 —
-   while the scene still covers the screen. Measured, the reveal ran from
-   scrollY 150 to 750 and was finished at exactly the moment the headline
-   reached a readable position. The reader never saw it.
-
-   So the opening section is anchored on `cover` instead, around the 50% mark.
-   That point is where the headline sits mid-viewport almost regardless of
-   window height: the scene is always exactly one viewport tall, so the
-   section's cover phase always starts at scroll 0 and runs `viewport +
-   section` long — which puts the headline near the middle at ~50% whether the
-   window is 700px or 1200px tall.                                          */
+   The chapter label and the paragraph still reveal as the section arrives —
+   only the headline was taken off the scroll timeline. `entry`-anchored
+   ranges are what a section wants when it is first on the page; chapter 00 is
+   not, it sits below a full viewport of opening scene, so its entry phase
+   begins at scroll 0 while the scene still covers the screen. Anchoring on
+   `cover` around the 50% mark puts it mid-viewport almost regardless of window
+   height, because the scene is always exactly one viewport tall.           */
 @supports (animation-timeline: view()) {
   .hero .rv-clip { animation-range: cover 36% cover 56%; }
-  .hero .kw:nth-child(1) .ki { animation-range: cover 40% cover 58%; }
-  .hero .kw:nth-child(2) .ki { animation-range: cover 44% cover 62%; }
-  .hero .kw:nth-child(3) .ki { animation-range: cover 48% cover 66%; }
-
-  /* Hover replays it: a different keyframe name is a different animation, so
-     it starts fresh, on a clock rather than on the scroll position. The
-     per-line delays in the base rule supply the stagger. On leaving, the name
-     reverts and the scroll timeline picks it up again at whatever progress the
-     section is really at — which, once it has arrived, is the finished state.
-
-     Guarded on a real pointer: `:hover` on a touchscreen can stick after a
-     tap, which would leave the headline mid-reveal. */
-  @media (hover: hover) and (pointer: fine) {
-    .hero h1:hover .ki {
-      animation-name: ddam-kinup-replay;
-      animation-timeline: auto;
-      animation-range: normal;
-    }
-  }
 }
 @keyframes ddam-kinup {
-  from { transform: translate3d(0, 108%, 0); opacity: 0; filter: blur(7px); }
-  to   { transform: none; opacity: 1; filter: blur(0); }
-}
-/* Identical to the above, and duplicated on purpose: `animation-name` is the
-   only animation property whose change actually restarts a CSS animation, so
-   hover needs a second name to swap to. Changing `animation-timeline` alone
-   looks like it should work and does not — verified, the timeline flipped to
-   `auto` and the lines stayed exactly where they were, because the existing
-   animation is re-attached rather than replayed and it had already finished.
-   Keep the two in step. */
-@keyframes ddam-kinup-replay {
   from { transform: translate3d(0, 108%, 0); opacity: 0; filter: blur(7px); }
   to   { transform: none; opacity: 1; filter: blur(0); }
 }
@@ -307,79 +302,28 @@
 }
 .shine:hover::after { left: 120%; }
 
-/* ---- marquee + poster rail ------------------------------------------
-   Both duplicate their track and translate by exactly -50%, so the loop
+/* ---- tagline marquee ------------------------------------------------
+   The track is rendered twice and translated by exactly -50%, so the loop
    is seamless. The duplicate is aria-hidden.                          */
 .mqwrap {
   overflow: hidden;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
           mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
 }
-.mq, .psl { display: flex; width: max-content; will-change: transform; }
+.mq { display: flex; width: max-content; will-change: transform; }
 .mq { animation: ddam-mqrun 46s linear infinite; }
 .mq > span  { display: flex; align-items: center; gap: 56px; padding-right: 56px; }
-.psl > span { display: flex; gap: 28px; padding-right: 28px; }
 @keyframes ddam-mqrun { to { transform: translate3d(-50%, 0, 0); } }
 
-/* ---- poster rail ------------------------------------------------------
-   The rail runs newest-first, and its position is tied to scroll rather than
-   to a timer. A timed marquee is already mid-loop by the time the reader
-   reaches chapter 05, so it opens on an arbitrary poster and reads as
-   unordered; scroll-linked, it always opens on the newest and walks backwards
-   through time as you descend.
-
-   The timeline has to be NAMED. `.mqwrap` is `overflow: hidden`, which makes
-   it a scroll container, so a plain `view()` on `.psl` would resolve against
-   the wrapper instead of the document and never advance. `.rail-scope` sits
-   outside the clip, so its scrollport is the document.
-
-   The wrapper clips at its padding edge, so `padding-block` is the headroom
-   the -12px hover lift needs — without it the lift pushes each card's
-   kind/date row out of the overflow box and it disappears.                */
-.pslwrap {
-  padding-block: 20px;
-  /* Fallback for browsers with no scroll-driven animations: the rail is a
-     plain horizontal scroller, so every poster is still reachable. */
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
-}
-.pslwrap::-webkit-scrollbar { display: none; }
-
-@keyframes ddam-railscroll {
-  from { transform: translate3d(0, 0, 0); }
-  /* travel = track width - viewport width, so the last card lands flush right */
-  to   { transform: translate3d(calc(-100% + 100vw), 0, 0); }
-}
-
-@supports (animation-timeline: view()) {
-  .rail-scope { view-timeline-name: --poster-rail; view-timeline-axis: block; }
-  .pslwrap { overflow-x: hidden; }
-  .psl {
-    animation: ddam-railscroll linear both;
-    animation-timeline: --poster-rail;
-    /* Starts once the rail is a third of the way in and ends as it begins to
-       leave, so the travel happens while it is actually on screen. */
-    animation-range: entry 30% exit 70%;
-  }
-}
-
-/* On a narrow screen the track is ~7x the viewport, so scroll-linking it makes
-   it fly. Swiping is the native gesture there anyway — hand it back. */
-@media (max-width: 767px) {
-  .pslwrap { overflow-x: auto; scroll-snap-type: x proximity; }
-  .psl { animation: none; transform: none; }
-  .pcard { scroll-snap-align: center; }
-}
-
-.pcard { width: 284px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px;
-         padding: 0; border: 0; background: none; color: inherit; text-align: left;
-         cursor: pointer; transition: transform .55s cubic-bezier(.16,1,.3,1); }
-.pcard:hover { transform: translate3d(0, -12px, 0); }
-.pcard:focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 6px; }
-.pcard img { transition: opacity .55s; opacity: 0.88; }
-.pcard:hover img,
-.pcard:focus-visible img { opacity: 1; }
+/* ---- chapter 05 coverflow ---------------------------------------------
+   The carousel itself is components/ui/coverflow-carousel.tsx and paints its
+   own transforms straight to the DOM — a raked 3D ring is not something a
+   scroll timeline can express. All that is needed here is the caption's
+   cross-fade, which the upstream component did with `animate-in fade-in` from
+   tailwindcss-animate; this project has no animation plugin and does not need
+   one for a two-line fade.                                                 */
+.cf-cap { animation: ddam-cf-cap 0.3s ease both; }
+@keyframes ddam-cf-cap { from { opacity: 0; } }
 
 /* ---- poster lightbox -------------------------------------------------
    Native <dialog>, so Esc and the focus trap come from the platform. The
@@ -731,7 +675,4 @@ body:has(.intro) .hlogo-fill {
   }
   .aura, .ring { display: none; }
   .grain::after { display: none; }
-  /* the rail's travel is scroll-linked, not timed — keep it, but let the
-     reader move it by hand too */
-  .pslwrap { overflow-x: auto; }
 }
