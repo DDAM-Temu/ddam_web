@@ -132,6 +132,9 @@ export const SERVICES = [
     icon: "flask",
   },
   {
+    // BPO sits inside this service rather than beside it — confirmed with the
+    // client 2026-08-31, after the President's message listed it as a separate
+    // capability. There is no fifth service line to add.
     slug: "digital-marketing",
     name: "Digital Marketing",
     blurb:
@@ -155,6 +158,9 @@ export const GROUP_CHAIN = [
   },
   {
     // DDAM is the subject of the page, so it carries the accent — not the parent.
+    // "Delivery centre" stays: the President's message calls DDAM an AI
+    // development hub, but as an ambition ("our ambition is to become"), and
+    // the client confirmed 2026-08-31 that the label should not change yet.
     name: "DDAM",
     role: "Delivery centre",
     note: `${CORPORATE.headcount} specialists in Ulaanbaatar covering AI, data, platform operations and digital marketing.`,
@@ -210,20 +216,37 @@ export const REACH = [
  *
  * `href` is an external posting. Only the Digital Marketing Officer has one;
  * the rest route to the address on the page.
+ *
+ * The descriptions are DRAFTS and want checking by someone who knows the
+ * roles. There is no job spec behind them — each one is built from what this
+ * site already says the company does, so nothing in them is invented, but
+ * "grounded in our own marketing copy" is not the same as "accurate about the
+ * job". PoC, the largest-division claim and the same-working-day-as-Tokyo line
+ * come from the Proof of Concept & R&D service, DIVISIONS and the chapter 03
+ * copy respectively.
  */
 export const ROLES = [
-  { title: "AI / ML Engineer" },
+  {
+    title: "AI / ML Engineer",
+    note: "AI agents, LLM applications and workflow automation — PoC through to production support.",
+  },
   {
     title: "Content Creator",
-    note: "Creative work, Photoshop, AI image and video generation, banners and posters",
+    note: "Creative production for campaign work: Photoshop, AI-generated image and video, banners and posters.",
   },
-  { title: "Scrum Master", note: "Project management" },
+  {
+    title: "Scrum Master",
+    note: "Project management — keeping delivery moving across teams working in the same day as Tokyo.",
+  },
   {
     title: "Digital Marketing Officer",
-    note: "Full description on Zangia",
+    note: "Ad operations and reporting across Google, Amazon, Meta and the major platforms, in the largest division in the company.",
     href: "https://zangia.mn/job/_mcacrr136l",
   },
-  { title: "Software Engineer", note: "Front-end and back-end" },
+  {
+    title: "Software Engineer",
+    note: "Front-end and back-end, across the Solution and Platform teams.",
+  },
 ] as const;
 
 /**
@@ -240,6 +263,81 @@ export const HIRING = {
   progression:
     "Two performance reviews a year, in June and December, moving you through five levels. Five is the highest.",
 } as const;
+
+/**
+ * The management team, supplied 2026-08-31, in order of seniority.
+ *
+ * THE PRESIDENT'S NAME is 今井初実, Hatsumi Imai — confirmed 2026-08-31.
+ *
+ * Her surname changed; Suzuki (鈴木初実) is the former one. That is why the
+ * source portrait is filenamed "Hatsumi Suzuki 2.png" and why anything handed
+ * over before this date says Suzuki. Neither is a typo to propagate — the
+ * current name is Imai, and it is the only one that should appear anywhere.
+ *
+ * `native` is the member's name in their own script where the client gave one.
+ * Khandmaa Batbayar has none here — Mongolian Cyrillic exists (Б.Хандмаа, from
+ * the portrait filename) but was not supplied in the list, and a name is not
+ * something to lift from a filename.
+ */
+export const MANAGEMENT = [
+  {
+    name: "Hatsumi Imai",
+    native: "今井初実",
+    role: "President and Executive Officer, AI Executive Member",
+    portrait: "/img/leadership/hatsumi-imai.webp",
+  },
+  {
+    name: "Makito Tsukahara",
+    native: "塚原牧人",
+    role: "Executive Vice President",
+    portrait: "/img/leadership/makito-tsukahara.webp",
+  },
+  {
+    name: "Yoshiki Miyamoto",
+    native: "宮本良樹",
+    role: "Corporate Planning and Administration Division, Executive Officer",
+    portrait: "/img/leadership/yoshiki-miyamoto.webp",
+  },
+  {
+    name: "Khandmaa Batbayar",
+    role: "BPO Executive Member",
+    portrait: "/img/leadership/khandmaa-batbayar.webp",
+  },
+] as const;
+
+/**
+ * The President's message, supplied 2026-08-31. Reproduced verbatim — it is a
+ * signed statement, so it is not ours to tighten, and the paragraph breaks are
+ * hers.
+ *
+ * Spread from MANAGEMENT[0] rather than restated, so her name, role and
+ * portrait cannot drift between the team section and the message beneath it.
+ *
+ * Three things in it sit apart from the rest of the site. All were put to the
+ * client on 2026-08-31 and all were deliberately left standing — do not
+ * "correct" them:
+ *   - it states a vision ("an indispensable AI development hub...") alongside
+ *     VISION below ("Always to create high value"). The company vision is
+ *     unchanged; hers is her framing of it, and the two coexist on purpose.
+ *   - its list of regions includes China and omits Japan, France and the US,
+ *     where REACH above has the reverse. Left as written.
+ *   - it says "Dentsu Data Artist Mongolia" where CORPORATE.legalName is
+ *     "Dentsu Data Artist Mongol LLC". The legal name is the one the site
+ *     uses; whether her sentence should follow it is the one point still open.
+ */
+export const PRESIDENT = {
+  ...MANAGEMENT[0],
+  message: [
+    "We are living in an era where generative AI is rapidly transforming the way businesses operate, create value, and compete on a global scale. As technology continues to evolve at an unprecedented speed, companies are expected not only to adopt new tools, but also to rethink how they work, collaborate, and deliver meaningful impact.",
+    "At Dentsu Data Artist Mongolia (DDAM), our ambition is to become a global AI development hub for the dentsu group. Based in Mongolia, DDAM brings together strong capabilities in digital advertising, BPO, data, engineering, and AI development. By combining operational excellence with advanced technology, we support business transformation and contribute to the growth of Dentsu Digital, dentsu Japan, and the broader dentsu group.",
+    "Mongolia has the potential to serve as a strategic hub connecting global teams across regions such as the UK, Singapore, India, Taiwan, China, Indonesia, and Vietnam. By leveraging this unique position, DDAM will continue to strengthen cross-border collaboration and develop scalable AI solutions that create value beyond any single market.",
+    "Our greatest strength is our people. DDAM is a team of talented and ambitious members who bring speed, creativity, and commitment to every challenge. As we continue to grow, we are also building the culture, systems, and governance needed to become a stronger and more sustainable organization. I believe that when each member feels proud to be part of DDAM, understands our shared vision, and continues to learn and grow, we can create even greater value together.",
+    "As President, I place great importance on staying close to the frontline, listening to our members, and communicating openly. Understanding not only what we do, but why we do it, is essential to building trust and moving forward as one team. Differences in culture and ways of working are not obstacles; they are opportunities to broaden our perspectives and create new possibilities.",
+    "Looking ahead, DDAM will continue to pursue both business growth and operational excellence. While revenue growth is an important measure of our contribution to the dentsu group, sustainable growth can only be achieved when our people, culture, and operations grow together.",
+    "Our vision is clear: to make DDAM an indispensable AI development hub for the dentsu group and a source of innovation from Mongolia to the world.",
+    "Together, we will continue to challenge ourselves, strengthen our capabilities, and create the future through technology, collaboration, and people.",
+  ],
+};
 
 export const PLATFORM_PARTNERS = [
   "Amazon Ads",

@@ -347,7 +347,15 @@ only record, so keep it honest.
   (the office photography now exists)
 
 **/about — specialists**
-- Leadership names, titles and biographies
+- Leadership **biographies**. Names, titles and portraits for all four
+  management members are published, plus the President's message. No bios yet.
+- The President's name is **Hatsumi Imai, 今井初実**. Her surname changed;
+  Suzuki (鈴木初実) is the former one, which is why the source portrait is
+  filenamed `Hatsumi Suzuki 2.png` and why older hand-offs say Suzuki. Rename
+  the source if it is ever passed on.
+- Khandmaa Batbayar has no name in Mongolian Cyrillic on the site. It exists
+  (Б.Хандмаа, per the portrait filename) but was never supplied directly, and
+  a person's name is not something to lift from a filename.
 - Expandable CVs (PRD §5.3)
 - Job titles: the timesheet export carries department labels only
 - Headshots, **plus written photo consent for every person published** — note
@@ -355,7 +363,8 @@ only record, so keep it honest.
   staff, so this one is outstanding against live content, not future content
 
 **/about — corporate profile**
-- Representative director / CEO
+- Representative director — the President is now listed, but "representative
+  director" is a distinct legal role and has not been confirmed as hers
 - Capital
 - Company registration number
 - Interactive history timeline (PRD §5.3) — the 2018 founding date still needs

@@ -76,3 +76,7 @@ preloading/
 # see README for the recipes.
 Site video/
 Office image/
+
+# Management portraits (21 MB of 1696x2528 PNGs). Only the encoded portrait of
+# whoever is actually published ships, in public/img/leadership.
+management-team/

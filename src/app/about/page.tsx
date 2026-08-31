@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
 import { ChapterLabel } from "@/components/narrative";
+import { ManagementTeam } from "@/components/management-team";
 import { OfficeCarousel } from "@/components/office-carousel";
-import { CORPORATE, DIVISIONS, GROUP_CHAIN, VISION } from "@/lib/content";
+import { CORPORATE, DIVISIONS, GROUP_CHAIN, PRESIDENT, VISION } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -18,6 +19,7 @@ const PROFILE = [
   { label: "Head office", value: `${CORPORATE.address.line1}, ${CORPORATE.address.line2}, ${CORPORATE.address.line3}` },
   { label: "Established", value: CORPORATE.founded },
   { label: "Employees", value: `${CORPORATE.headcount} (August 2026)` },
+  { label: "President", value: `${PRESIDENT.name} — ${PRESIDENT.role}` },
   { label: "Parent company", value: "Dentsu Digital Inc." },
   { label: "Telephone", value: CORPORATE.phone },
   { label: "Email", value: CORPORATE.email },
@@ -63,10 +65,68 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section id="management" className="border-b border-white/10 px-[var(--gutter)] py-24">
+        <div className="mx-auto flex max-w-[1248px] flex-col gap-12">
+          <div className="flex flex-col gap-[22px]">
+            <ChapterLabel number="02" title="Management team" />
+            <h2 className="rv font-display text-[length:var(--text-chapter)] leading-[1.06] font-light tracking-[-0.024em] text-balance text-chalk">
+              Who runs it.
+            </h2>
+          </div>
+          <ManagementTeam />
+        </div>
+      </section>
+
+      {/* Her words, at the width they want to be read at. The portrait holds
+          to the top of the column on wide screens so it stays with the
+          attribution rather than drifting away from eight paragraphs. */}
+      <section id="president" className="border-b border-white/10 px-[var(--gutter)] py-24">
+        <div className="mx-auto flex max-w-[1248px] flex-col gap-12">
+          <div className="flex flex-col gap-[22px]">
+            <ChapterLabel number="03" title="President's message" />
+            <h2 className="rv font-display text-[length:var(--text-chapter)] leading-[1.06] font-light tracking-[-0.024em] text-balance text-chalk">
+              A message from our President.
+            </h2>
+          </div>
+
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:gap-20">
+            <figure className="rv hold flex flex-col gap-5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={PRESIDENT.portrait}
+                alt={`${PRESIDENT.name}, ${PRESIDENT.role} of ${CORPORATE.legalName}`}
+                width={760}
+                height={1133}
+                className="w-full max-w-[300px] border border-white/10 object-cover"
+              />
+              <figcaption className="flex flex-col gap-1.5">
+                <span className="font-display text-[1.35rem] leading-tight font-light text-chalk">
+                  {PRESIDENT.name}
+                </span>
+                <span className="font-mono text-[10.5px] tracking-[0.16em] text-accent uppercase">
+                  {PRESIDENT.role}
+                </span>
+              </figcaption>
+            </figure>
+
+            <div className="flex flex-col gap-6">
+              {PRESIDENT.message.map((para) => (
+                <p
+                  key={para.slice(0, 40)}
+                  className="max-w-[660px] text-[16.5px] leading-[1.8] text-pretty text-soft"
+                >
+                  {para}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="people" className="border-b border-white/10 px-[var(--gutter)] py-24">
         <div className="mx-auto grid max-w-[1248px] gap-14 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-24">
           <div className="hold flex flex-col gap-[22px]">
-            <ChapterLabel number="02" title="Specialists" />
+            <ChapterLabel number="04" title="Specialists" />
             <h2 className="font-display text-[length:var(--text-chapter)] leading-[1.06] font-light tracking-[-0.024em] text-balance text-chalk">
               Where the {CORPORATE.headcount} sit.
             </h2>
@@ -107,7 +167,7 @@ export default function AboutPage() {
           the sibling sections use. */}
       <section id="office" className="border-b border-white/10 py-24">
         <div className="col mb-12 flex flex-col gap-[22px]">
-          <ChapterLabel number="03" title="The office" />
+          <ChapterLabel number="05" title="The office" />
           <h2 className="rv font-display text-[length:var(--text-chapter)] leading-[1.06] font-light tracking-[-0.024em] text-balance text-chalk">
             One floor, in Ulaanbaatar.
           </h2>
@@ -117,7 +177,7 @@ export default function AboutPage() {
 
       <section id="dentsu" className="border-b border-white/10 bg-ink-raised px-[var(--gutter)] py-24">
         <div className="mx-auto flex max-w-[1248px] flex-col gap-10">
-          <ChapterLabel number="04" title="The subsidiary advantage" />
+          <ChapterLabel number="06" title="The subsidiary advantage" />
           <h2 className="rv font-display text-[length:var(--text-scene)] leading-[1.06] font-light tracking-[-0.026em] text-balance text-chalk">
             Backed by dentsu. Run from Mongolia.
           </h2>
@@ -152,7 +212,7 @@ export default function AboutPage() {
 
       <section id="profile" className="px-[var(--gutter)] py-24">
         <div className="mx-auto flex max-w-[1248px] flex-col gap-10">
-          <ChapterLabel number="05" title="Corporate profile" />
+          <ChapterLabel number="07" title="Corporate profile" />
           <dl className="rv border-t border-white/20">
             {PROFILE.map((row) => (
               <div
