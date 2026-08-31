@@ -334,6 +334,43 @@ long over before the reader arrived.
 The logo is still raster only. A vector logo is needed before launch; a 520px
 PNG in the header will not hold up at 4K.
 
+## Still to be supplied
+
+These were on the page as visible "Awaiting content" panels until 2026-08-31,
+when they were hidden. Hiding them does not close them — this list is now the
+only record, so keep it honest.
+
+**/about — vision, mission and values**
+- Mission statement
+- Company values
+- "The most comfortable office in Ulaanbaatar" — the claim itself, in copy
+  (the office photography now exists)
+
+**/about — specialists**
+- Leadership names, titles and biographies
+- Expandable CVs (PRD §5.3)
+- Job titles: the timesheet export carries department labels only
+- Headshots, **plus written photo consent for every person published** — note
+  the office stills and hero footage already shipped do show identifiable
+  staff, so this one is outstanding against live content, not future content
+
+**/about — corporate profile**
+- Representative director / CEO
+- Capital
+- Company registration number
+- Interactive history timeline (PRD §5.3) — the 2018 founding date still needs
+  confirming against the July 2024 "8th anniversary" poster
+
+**/services/[slug] — all four services**
+- Strategy header: the value proposition for this service
+- Problem and solution framing
+- Strengths and USPs
+- Case studies or tooling, where client work is publishable
+
+**/careers**
+- Benefits and compensation framework
+- Culture and working-environment copy
+
 ## Not built yet
 
 - Services mega menu (PRD asks for one; the header currently links straight

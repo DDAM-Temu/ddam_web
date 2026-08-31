@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AwaitingContent, PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/page-header";
 import { ChapterLabel } from "@/components/narrative";
 import { OfficeCarousel } from "@/components/office-carousel";
 import { CORPORATE, DIVISIONS, GROUP_CHAIN, VISION } from "@/lib/content";
@@ -60,14 +60,6 @@ export default function AboutPage() {
             ))}
           </ul>
 
-          {/* Vision is supplied; the rest of this section is not. */}
-          <AwaitingContent
-            items={[
-              "Mission statement",
-              "Company values",
-              "“The most comfortable office in Ulaanbaatar” — the claim itself, in copy",
-            ]}
-          />
         </div>
       </section>
 
@@ -106,14 +98,6 @@ export default function AboutPage() {
               ))}
             </dl>
 
-            <AwaitingContent
-              items={[
-                "Leadership names, titles and biographies",
-                "Expandable CVs (PRD §5.3)",
-                "Job titles — the timesheet export carries department labels only",
-                "Headshots, plus written photo consent for every person published",
-              ]}
-            />
           </div>
         </div>
       </section>
@@ -182,14 +166,6 @@ export default function AboutPage() {
               </div>
             ))}
           </dl>
-          <AwaitingContent
-            items={[
-              "Representative director / CEO",
-              "Capital",
-              "Company registration number",
-              "Interactive history timeline (PRD §5.3) — the 2018 founding date still needs confirming against the July 2024 “8th anniversary” poster",
-            ]}
-          />
         </div>
       </section>
     </>

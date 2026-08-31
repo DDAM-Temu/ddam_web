@@ -200,6 +200,47 @@ export const REACH = [
   },
 ] as const;
 
+/**
+ * Open roles, from the client on 2026-08-31.
+ *
+ * One wording call to review: the source said "IT engineer (backend
+ * frontend)" and flagged it as a title they were unsure about, so it is
+ * rendered as Software Engineer with a front-end/back-end note. That is a
+ * suggestion rather than a decision — change it here.
+ *
+ * `href` is an external posting. Only the Digital Marketing Officer has one;
+ * the rest route to the address on the page.
+ */
+export const ROLES = [
+  { title: "AI / ML Engineer" },
+  {
+    title: "Content Creator",
+    note: "Creative work, Photoshop, AI image and video generation, banners and posters",
+  },
+  { title: "Scrum Master", note: "Project management" },
+  {
+    title: "Digital Marketing Officer",
+    note: "Full description on Zangia",
+    href: "https://zangia.mn/job/_mcacrr136l",
+  },
+  { title: "Software Engineer", note: "Front-end and back-end" },
+] as const;
+
+/**
+ * How hiring and progression actually work here, from the same conversation.
+ *
+ * Deliberately worded as a welcome rather than a requirement: the client said
+ * they welcome people who speak Japanese and English, which is not the same as
+ * demanding both, and a careers page that overstates its own bar turns away
+ * the people it wants.
+ */
+export const HIRING = {
+  languages:
+    "Japanese and English speakers are especially welcome — much of the work runs in the same day as Tokyo.",
+  progression:
+    "Two performance reviews a year, in June and December, moving you through five levels. Five is the highest.",
+} as const;
+
 export const PLATFORM_PARTNERS = [
   "Amazon Ads",
   "AWS",

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AwaitingContent, PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/page-header";
 import { ArrowRight, SERVICE_ICONS } from "@/components/icons";
 import { SERVICES } from "@/lib/content";
 
@@ -39,15 +39,6 @@ export default async function ServicePage({ params }: Params) {
         <div className="mx-auto flex max-w-[1248px] flex-col gap-16">
           <div className="text-accent">{SERVICE_ICONS[service.icon]}</div>
 
-          {/* PRD §5.2 requires all four of these per service. None exist yet. */}
-          <AwaitingContent
-            items={[
-              "Strategy header — the value proposition for this service",
-              "Problem and solution framing",
-              "Strengths and USPs",
-              "Case studies or tooling, where client work is publishable",
-            ]}
-          />
 
           <Link
             href={`/services/${next.slug}`}
