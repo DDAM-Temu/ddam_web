@@ -162,6 +162,44 @@ export const GROUP_CHAIN = [
   },
 ] as const;
 
+/**
+ * Where DDAM's work has reached, supplied by the client on 2026-08-28.
+ *
+ * The source was a travel log — a count of business trips and the places they
+ * went. It is deliberately NOT presented that way: the client asked for the
+ * connection, not the itinerary, so the site shows the markets and says
+ * nothing about how many times anyone flew there.
+ *
+ * The nature of each connection is not documented, so the copy claims nothing
+ * beyond reach. Do not upgrade this to "clients" or "projects" without
+ * confirmation — that is a stronger claim than the source supports.
+ *
+ * The source also named cities (London, New York, Bangalore, Goa, Hyderabad);
+ * they are kept here in `cities` so the detail is not lost, even though the
+ * section currently renders the market alone.
+ */
+export const REACH = [
+  {
+    region: "APAC",
+    markets: [
+      { name: "Japan" },
+      { name: "Singapore" },
+      { name: "Taiwan" },
+      { name: "Vietnam" },
+      { name: "Indonesia" },
+      { name: "India", cities: "Bangalore, Goa, Hyderabad" },
+    ],
+  },
+  {
+    region: "EMEA",
+    markets: [{ name: "France" }, { name: "United Kingdom", cities: "London" }],
+  },
+  {
+    region: "Americas",
+    markets: [{ name: "United States", cities: "New York" }],
+  },
+] as const;
+
 export const PLATFORM_PARTNERS = [
   "Amazon Ads",
   "AWS",

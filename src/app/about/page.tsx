@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AwaitingContent, PageHeader } from "@/components/page-header";
 import { ChapterLabel } from "@/components/narrative";
+import { OfficeCarousel } from "@/components/office-carousel";
 import { CORPORATE, DIVISIONS, GROUP_CHAIN, VISION } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -64,7 +65,7 @@ export default function AboutPage() {
             items={[
               "Mission statement",
               "Company values",
-              "“The most comfortable office in Ulaanbaatar” — copy and office photography",
+              "“The most comfortable office in Ulaanbaatar” — the claim itself, in copy",
             ]}
           />
         </div>
@@ -117,9 +118,22 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* The section runs full-bleed so the coverflow can; the heading uses
+          .col, which resolves to the same left edge as the gutter-plus-max-width
+          the sibling sections use. */}
+      <section id="office" className="border-b border-white/10 py-24">
+        <div className="col mb-12 flex flex-col gap-[22px]">
+          <ChapterLabel number="03" title="The office" />
+          <h2 className="rv font-display text-[length:var(--text-chapter)] leading-[1.06] font-light tracking-[-0.024em] text-balance text-chalk">
+            One floor, in Ulaanbaatar.
+          </h2>
+        </div>
+        <OfficeCarousel />
+      </section>
+
       <section id="dentsu" className="border-b border-white/10 bg-ink-raised px-[var(--gutter)] py-24">
         <div className="mx-auto flex max-w-[1248px] flex-col gap-10">
-          <ChapterLabel number="03" title="The subsidiary advantage" />
+          <ChapterLabel number="04" title="The subsidiary advantage" />
           <h2 className="rv font-display text-[length:var(--text-scene)] leading-[1.06] font-light tracking-[-0.026em] text-balance text-chalk">
             Backed by dentsu. Run from Mongolia.
           </h2>
@@ -154,7 +168,7 @@ export default function AboutPage() {
 
       <section id="profile" className="px-[var(--gutter)] py-24">
         <div className="mx-auto flex max-w-[1248px] flex-col gap-10">
-          <ChapterLabel number="04" title="Corporate profile" />
+          <ChapterLabel number="05" title="Corporate profile" />
           <dl className="rv border-t border-white/20">
             {PROFILE.map((row) => (
               <div

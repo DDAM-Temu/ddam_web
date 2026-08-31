@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   Aura,
@@ -10,12 +9,15 @@ import { PosterCarousel } from "@/components/poster-carousel";
 import { ScrollScrubVideo } from "@/components/scroll-video";
 import { CountUp } from "@/components/count-up";
 import { Intro } from "@/components/intro";
+import { SceneReveal } from "@/components/scene-reveal";
+import { BackgroundVideo } from "@/components/background-video";
 import { ArrowRight, SERVICE_ICONS } from "@/components/icons";
 import {
   CORPORATE,
   DIVISIONS,
   GROUP_CHAIN,
   PLATFORM_PARTNERS,
+  REACH,
   SERVICES,
 } from "@/lib/content";
 
@@ -35,13 +37,14 @@ export default function Home() {
       {/* ============ 00 — OPENING SCENE ============ */}
       <section className="hero grain clip-scope relative flex h-[min(88vh,880px)] min-h-[560px] flex-col justify-center overflow-hidden">
         <Aura />
-        <Image
-          src="/img/hero-network.jpg"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="plx object-cover object-[50%_32%] opacity-40"
+        {/* The office itself, behind the line about it. `.plx` is deliberately
+            absent — the footage already moves, and floating it as well gives
+            the reader two competing motions to track. The two gradients below
+            do the darkening; this opacity only sets how far back it sits. */}
+        <BackgroundVideo
+          src="/video/office-loop.mp4"
+          poster="/img/office-loop.jpg"
+          className="absolute inset-0 h-full w-full object-cover object-[50%_45%] opacity-[0.34]"
         />
         <div
           aria-hidden="true"
@@ -52,7 +55,7 @@ export default function Home() {
           className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,9,15,0.62)_0%,rgba(7,9,15,0)_30%,#07090F_100%)]"
         />
 
-        <div className="col relative">
+        <SceneReveal className="col relative">
           <div className="rv-clip mb-[34px]">
             <ChapterLabel
               number="00"
@@ -80,7 +83,7 @@ export default function Home() {
             engineering and digital marketing — building production systems for
             Dentsu Digital and its clients in Japan and across APAC.
           </p>
-        </div>
+        </SceneReveal>
       </section>
 
       {/* ============ 01 — THE COMPANY ============ */}
@@ -206,9 +209,10 @@ export default function Home() {
 
       {/* ============ 03 — THE GEOGRAPHY ============
            The globe is composed with its subject on the right and open space
-           on the left, so it runs full-bleed and dissolves leftward into the
-           ground colour under the copy. Below lg the copy cannot sit on top of
-           it legibly, so the globe drops into its own band underneath.
+           on the left, so above lg it runs full-bleed and dissolves leftward
+           into the ground colour under the copy. Below lg there is no room
+           beside it, so the copy sits ON the globe instead and the fade turns
+           downward — see the two scrims further down.
 
            The globe turns with the scroll — forward down the page, backward up
            it — which is the one effect here that needs scripting; see
@@ -245,19 +249,47 @@ export default function Home() {
                 Tokyo · Parent
               </li>
               <li className="border border-white/20 px-5 py-3 font-mono text-[11.5px] tracking-[0.14em] text-soft uppercase">
-                APAC &amp; EMEA
+                APAC, EMEA &amp; Americas
               </li>
             </ul>
+
+            {/* The markets the work has reached, grouped by region so this and
+                the chips above read as the same claim at two levels of detail.
+                It says nothing about how the connection was made — the source
+                was a travel log, and that framing was explicitly not wanted.
+                See REACH in content.ts. */}
+            <dl className="rv mt-8 flex flex-col gap-3.5 border-t border-white/10 pt-7">
+              {REACH.map((region) => (
+                <div key={region.region} className="flex flex-col gap-1 sm:flex-row sm:gap-6">
+                  <dt className="w-[76px] shrink-0 pt-[3px] font-mono text-[10px] tracking-[0.2em] text-accent uppercase">
+                    {region.region}
+                  </dt>
+                  <dd className="text-[14.5px] leading-[1.65] text-muted">
+                    {region.markets.map((m) => m.name).join(" · ")}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
 
-        <div className="relative aspect-[16/10] w-full lg:absolute lg:inset-0 lg:aspect-auto lg:h-full">
+        <div className="absolute inset-0">
           <ScrollScrubVideo
             src="/video/earth-globe.mp4"
+            srcSmall="/video/earth-globe-sm.mp4"
             poster="/img/earth-globe.jpg"
-            className="absolute inset-0 h-full w-full object-cover object-[62%_50%] lg:object-[right_center]"
+            className="absolute inset-0 h-full w-full object-cover object-[68%_42%] lg:object-[right_center]"
           />
-          {/* the leftward fade — opaque under the copy, clear over the globe */}
+          {/* Two scrims for two compositions. Above lg the copy sits BESIDE the
+              globe, so the fade runs leftward — opaque under the text, clear
+              over the globe. Below lg the copy sits ON it, so the fade has to
+              run downward instead: heaviest at the top where the label and
+              heading are, lifting toward the bottom so the globe still reads
+              as a globe rather than as a texture. */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(9,20,38,0.93)_0%,rgba(9,20,38,0.88)_45%,rgba(9,20,38,0.66)_78%,rgba(9,20,38,0.5)_100%)] lg:hidden"
+          />
           <div
             aria-hidden="true"
             className="absolute inset-0 hidden bg-[linear-gradient(90deg,#091426_0%,#091426_20%,rgba(9,20,38,0.94)_34%,rgba(9,20,38,0.58)_52%,rgba(9,20,38,0.14)_74%,rgba(9,20,38,0)_92%)] lg:block"

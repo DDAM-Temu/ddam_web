@@ -35,11 +35,17 @@ const FPS = 24;
  */
 export function ScrollScrubVideo({
   src,
+  srcSmall,
+  smallUpTo = 768,
   poster,
   className = "",
-  minWidth = 768,
+  minWidth = 0,
 }: {
   src: string;
+  /** Lighter encode for narrow screens. Falls back to `src` if absent. */
+  srcSmall?: string;
+  /** Viewport width, in px, at or below which `srcSmall` is used. */
+  smallUpTo?: number;
   poster: string;
   className?: string;
   /** Viewport width, in px, below which the poster simply stands in. */
@@ -56,10 +62,17 @@ export function ScrollScrubVideo({
     if (
       saveData === true ||
       window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      !window.matchMedia(`(min-width: ${minWidth}px)`).matches
+      (minWidth > 0 && !window.matchMedia(`(min-width: ${minWidth}px)`).matches)
     ) {
       return;
     }
+
+    // Picked once, at mount. A phone gets a quarter of the bytes for a frame
+    // it is showing at a third of the size — and the seek cost scales with the
+    // pixels being decoded, which is what actually decides whether scrubbing
+    // feels attached to the finger or not.
+    const chosen =
+      srcSmall && window.matchMedia(`(max-width: ${smallUpTo}px)`).matches ? srcSmall : src;
 
     let raf = 0;
     let eased = 0; // the playhead we render, in seconds
@@ -110,7 +123,7 @@ export function ScrollScrubVideo({
         if (entry.isIntersecting) {
           if (!video.src) {
             video.preload = "auto";
-            video.src = src;
+            video.src = chosen;
             video.load();
           }
           if (!raf) raf = requestAnimationFrame(step);
@@ -129,7 +142,7 @@ export function ScrollScrubVideo({
       video.removeEventListener("loadeddata", prime);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [src, minWidth]);
+  }, [src, srcSmall, smallUpTo, minWidth]);
 
   return (
     <video

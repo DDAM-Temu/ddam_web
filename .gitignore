@@ -70,3 +70,9 @@ Earth.mp4
 # ships — 500px for the moving stages, 1024px for the one that comes to
 # rest; see README for the recipe and why the black render matters.
 preloading/
+
+# Office footage and stills (165 MB: two 4K/26Mbps clips and fifteen 4K PNGs).
+# What ships is public/video/office-loop.mp4 and public/img/office/*.webp;
+# see README for the recipes.
+Site video/
+Office image/

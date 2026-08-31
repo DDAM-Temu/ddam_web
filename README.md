@@ -172,8 +172,68 @@ Encoding narrower reads as blurry. The poster is frame 0 at the same width:
 ffmpeg -i Earth.mp4 -vf "select=eq(n\,0)" -frames:v 1 -q:v 3 public/img/earth-globe.jpg
 ```
 
+A phone gets a smaller cut of the same thing:
+
+```
+ffmpeg -i Earth.mp4 -an -vf "fps=24,scale=900:-2" \
+  -c:v libx264 -profile:v high -preset veryslow -crf 30 \
+  -g 3 -keyint_min 3 -sc_threshold 0 -pix_fmt yuv420p -movflags +faststart \
+  public/video/earth-globe-sm.mp4
+```
+
+1.29 MB against 4.78. `ScrollScrubVideo` picks between them at mount. The point
+is not only bandwidth: seek cost scales with the pixels being decoded, and that
+is what decides whether a scrub feels attached to the finger on a phone.
+
 If the frame rate changes, `FPS` in `scroll-video.tsx` must change with it —
 seeks are quantised to that grid.
+
+### Chapter 00's office loop
+
+`Site video/` (two 4K/26 Mbps clips, 87 MB) stays local. What ships is
+`public/video/office-loop.mp4`, 3.4 MB — both clips, video 2 first, joined and
+then closed into a loop:
+
+```
+# 1. crossfade clip 2 into clip 1 (offset = len(clip2) - fade)
+ffmpeg -i Sitevideo-2.mp4 -i Sitevideo-1.mp4 -an -filter_complex \
+"[0:v]scale=1600:900,fps=30,setsar=1[a];[1:v]scale=1600:900,fps=30,setsar=1[b];\
+ [a][b]xfade=transition=fade:duration=0.8:offset=12.7667,fps=30[out]" \
+ -map "[out]" -c:v libx264 -preset medium -crf 24 joined.mp4
+
+# 2. blend the last second back over the first, so the loop has no cut
+ffmpeg -i joined.mp4 -an -filter_complex \
+"[0:v]split[a][b];\
+ [a]trim=0:24.667,setpts=PTS-STARTPTS,fps=30[main];\
+ [b]trim=24.667:25.667,setpts=PTS-STARTPTS,fps=30,format=yuva420p,fade=out:st=0:d=1:alpha=1[over];\
+ [main][over]overlay=0:0,format=yuv420p[out]" \
+ -map "[out]" -c:v libx264 -profile:v high -preset slow -crf 31 -movflags +faststart \
+ public/video/office-loop.mp4
+```
+
+Step 2 is the one that is easy to get backwards. The tail goes over the HEAD,
+not the head over the tail — the output then starts on a frame that matches its
+own last frame. Check it by differencing the first and last frames: 0.9/255
+here, against 48.6 for a straight cut.
+
+Note clip 2 carries a DDAM logo baked into the top right, so it is on screen
+for the first ~13s of every loop. Measured over the hero's gradients it sits
+about 19 levels above its background — faint, but there.
+
+Unlike the chapter 03 globe this one only ever plays, so it takes a normal GOP
+and normal compression. It is not scrubbed and does not want that encode.
+
+### The office stills
+
+`Office image/` (fifteen 4K PNGs, 122 MB) stays local; 680 KB ships:
+
+```
+cwebp -q 78 -resize 900 0 -m 6 "Office image/N.png" -o public/img/office/office-NN.webp
+```
+
+The coverflow loads the first three eagerly and the rest lazily — every card
+sits inside the frame's box, so lazy defers the whole set until the section is
+approached rather than deferring card by card.
 
 ### The opening scene
 

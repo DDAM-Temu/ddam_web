@@ -44,6 +44,8 @@ export interface CoverflowCarouselProps {
   showNavigation?: boolean;
   /** Fires when the centre card is clicked rather than dragged. */
   onActivate?: (index: number) => void;
+  /** How many cards load eagerly; the rest wait until the carousel nears. */
+  eagerCount?: number;
   /** Names the carousel for assistive tech. */
   label?: string;
   className?: string;
@@ -65,6 +67,7 @@ export function CoverflowCarousel({
   showPagination = false,
   showNavigation = false,
   onActivate,
+  eagerCount = 3,
   label = "Cover carousel",
   className,
   cardClassName,
@@ -349,6 +352,13 @@ export function CoverflowCarousel({
                   src={slide.src}
                   alt={slide.alt}
                   draggable={false}
+                  /* Every card is inside the frame's box, so the ones off to
+                     the sides still count as in-viewport once the carousel is
+                     reached — lazy here defers the whole set until the section
+                     approaches, rather than deferring card by card. That is
+                     the win worth having for a gallery below the fold. */
+                  loading={index < eagerCount ? "eager" : "lazy"}
+                  decoding="async"
                   className="h-full w-full select-none object-cover"
                 />
               </div>

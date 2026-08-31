@@ -133,10 +133,6 @@
   .plx  { animation: ddam-floaty linear both;  animation-timeline: --clip-scope; animation-range: cover; }
   .zoom { animation: ddam-zoomout linear both; animation-timeline: --clip-scope; animation-range: entry 0% cover 70%; }
 
-  /* `.rv` for content inside a clipping section: same reveal, named timeline.
-     A plain `view()` in there resolves against the section rather than the
-     document and pins at a constant progress. */
-  .rv-clip { animation: ddam-reveal linear both; animation-timeline: --clip-scope; animation-range: entry 6% cover 34%; }
 
 }
 
@@ -150,26 +146,9 @@
    rule to switch on. `.kw` keeps its clip, which is what the lines rise out
    of. The delays are the hover stagger and are inert until then. */
 .kw { display: block; overflow: hidden; padding-bottom: 0.08em; }
+/* Static by default, which is also the fallback where scroll-driven
+   animations are unsupported: the headline is simply there. */
 .ki { display: block; }
-
-/* Hover plays it, and is now the only thing that does. Going from no
-   animation at all to a named one is itself a fresh animation, so each hover
-   restarts cleanly — which is why the duplicate `-replay` keyframes this used
-   to need are gone along with the scroll timeline that forced them.
-
-   The per-line delays have to live in here, after the shorthand and at higher
-   specificity. The `animation` shorthand resets `animation-delay` to 0, so
-   stating the stagger outside this rule silently loses it and all three lines
-   rise together — the same trap as `animation-timeline`, one property along.
-
-   Guarded on a real pointer: `:hover` can stick after a tap on a touchscreen,
-   which would strand the headline mid-reveal. */
-@media (hover: hover) and (pointer: fine) {
-  .hero h1:hover .ki { animation: ddam-kinup 1.15s cubic-bezier(.16,1,.3,1) both; }
-  .hero h1:hover .kw:nth-child(1) .ki { animation-delay: 0.10s; }
-  .hero h1:hover .kw:nth-child(2) .ki { animation-delay: 0.24s; }
-  .hero h1:hover .kw:nth-child(3) .ki { animation-delay: 0.38s; }
-}
 
 /* ---- chapter 00's arrival ---------------------------------------------
    The chapter label and the paragraph still reveal as the section arrives —
@@ -179,11 +158,37 @@
    begins at scroll 0 while the scene still covers the screen. Anchoring on
    `cover` around the 50% mark puts it mid-viewport almost regardless of window
    height, because the scene is always exactly one viewport tall.           */
-@supports (animation-timeline: view()) {
-  .hero .rv-clip { animation-range: cover 36% cover 56%; }
-}
+/* ---- chapter 00's arrival ---------------------------------------------
+   Timed, not scrubbed, and this is the one place on the site where that is
+   the right call. The lines rise out of a clip, so a half-played state is
+   letters cut through the middle — and a scroll timeline is scrubbed, so a
+   slow scroll parks the reader in that state and holds it. Measured before
+   the change: the three lines sat at different offsets with different blurs
+   at every scroll position, so the headline never read as one block and
+   stopping mid-scroll left it sliced. A clock finishes on its own.
+
+   `[data-scene]` is set by SceneReveal after mount, so nothing is hidden
+   server-side: no JavaScript, or reduced motion, and the scene is just there.
+   See src/components/scene-reveal.tsx.                                    */
+[data-scene] .rv-clip,
+[data-scene] .ki { opacity: 0; }
+[data-scene] .rv-clip { transform: translate3d(0, 22px, 0); }
+[data-scene] .ki { transform: translate3d(0, 108%, 0); filter: blur(3px); }
+
+[data-scene="play"] .rv-clip { animation: ddam-reveal 0.9s cubic-bezier(.16,1,.3,1) both; }
+[data-scene="play"] .ki { animation: ddam-kinup 1.05s cubic-bezier(.16,1,.3,1) both; }
+/* After the shorthand and at higher specificity — `animation` resets
+   `animation-delay`, so a stagger stated anywhere above this is discarded. */
+[data-scene="play"] .kw:nth-child(1) .ki { animation-delay: 0.06s; }
+[data-scene="play"] .kw:nth-child(2) .ki { animation-delay: 0.15s; }
+[data-scene="play"] .kw:nth-child(3) .ki { animation-delay: 0.24s; }
+[data-scene="play"] p.rv-clip { animation-delay: 0.34s; }
+/* 108% so the line starts wholly below its own clip and rises out of nothing;
+   anything less leaves its top edge peeking. The blur is only a hint of speed —
+   it used to be 7px, which on 96px display type read as a rendering fault
+   rather than as motion. */
 @keyframes ddam-kinup {
-  from { transform: translate3d(0, 108%, 0); opacity: 0; filter: blur(7px); }
+  from { transform: translate3d(0, 108%, 0); opacity: 0; filter: blur(3px); }
   to   { transform: none; opacity: 1; filter: blur(0); }
 }
 
@@ -285,6 +290,63 @@
   animation: ddam-spin 26s linear infinite;
 }
 @keyframes ddam-spin { to { transform: rotate(360deg); } }
+
+/* ---- enquiry: the message as a sentence to finish ---------------------
+   The blanks are real inputs stripped back to a ruled line, so the whole
+   thing reads as one paragraph rather than as a stack of fields. Everything
+   here exists to stop a form control from looking like a form control.
+
+   `field-sizing: content` is what makes a blank grow as it is filled, which
+   is the entire trick; where it is unsupported the `size` attribute leaves a
+   sensible fixed blank and nothing breaks.                                */
+.enq-line {
+  font-size: clamp(1.35rem, 2.9vw, 2.05rem);
+  line-height: 1.55;
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  color: var(--color-soft);
+  text-wrap: pretty;
+}
+.enq-line-small {
+  font-size: clamp(1rem, 1.7vw, 1.2rem);
+  line-height: 1.9;
+}
+
+.enq-blank {
+  display: inline;
+  min-width: 6ch;
+  padding: 0 0.12em 0.06em;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--color-chalk);
+  caret-color: var(--color-accent);
+  outline: none;
+  transition: border-color 0.3s, background-color 0.3s;
+  field-sizing: content;
+}
+/* A textarea is the one that has to wrap, so it cannot stay inline. */
+.enq-blank-grow {
+  display: block;
+  width: 100%;
+  margin-top: 0.35em;
+  resize: none;
+  overflow: hidden;
+}
+.enq-blank::placeholder {
+  color: var(--color-faint);
+  opacity: 1;
+}
+.enq-blank:hover { border-bottom-color: rgba(255, 255, 255, 0.5); }
+.enq-blank:focus {
+  border-bottom-color: var(--color-accent);
+  background: rgba(46, 107, 255, 0.07);
+}
+/* The browser's own invalid styling would shout; this only speaks up once
+   something has actually been typed and left. */
+.enq-blank:not(:placeholder-shown):invalid { border-bottom-color: var(--color-brand-red); }
 
 /* ---- interaction ---- */
 .lift { transition: transform .5s cubic-bezier(.16,1,.3,1), border-color .5s, background-color .5s; }

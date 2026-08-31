@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import { EnquiryForm } from "@/components/enquiry-form";
 import { PageHeader } from "@/components/page-header";
-import { ArrowRight } from "@/components/icons";
 import { CORPORATE, SOCIAL } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -79,21 +79,11 @@ export default function ContactPage() {
             </div>
           </dl>
 
-          <div className="rv flex flex-col gap-6 border border-white/10 bg-ink-card p-10">
+          <div className="rv flex flex-col gap-8">
             <h2 className="font-mono text-[11px] tracking-[0.18em] text-accent uppercase">
               Start a conversation
             </h2>
-            <p className="text-[16px] leading-[1.72] text-soft">
-              An enquiry form needs a destination inbox, a spam strategy and a privacy notice —
-              none of which are decided yet. Until then, email reaches the same people directly.
-            </p>
-            <a
-              href={`mailto:${CORPORATE.email}`}
-              className="shine flex w-fit items-center gap-2.5 bg-accent px-8 py-[17px] text-[15px] font-semibold text-ink"
-            >
-              Email {CORPORATE.shortName}
-              <ArrowRight size={15} />
-            </a>
+            <EnquiryForm />
           </div>
         </div>
       </section>
