@@ -353,9 +353,6 @@ only record, so keep it honest.
   Suzuki (鈴木初実) is the former one, which is why the source portrait is
   filenamed `Hatsumi Suzuki 2.png` and why older hand-offs say Suzuki. Rename
   the source if it is ever passed on.
-- Khandmaa Batbayar has no name in Mongolian Cyrillic on the site. It exists
-  (Б.Хандмаа, per the portrait filename) but was never supplied directly, and
-  a person's name is not something to lift from a filename.
 - Expandable CVs (PRD §5.3)
 - Job titles: the timesheet export carries department labels only
 - Headshots, **plus written photo consent for every person published** — note

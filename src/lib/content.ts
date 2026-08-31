@@ -274,10 +274,10 @@ export const HIRING = {
  * over before this date says Suzuki. Neither is a typo to propagate — the
  * current name is Imai, and it is the only one that should appear anywhere.
  *
- * `native` is the member's name in their own script where the client gave one.
- * Khandmaa Batbayar has none here — Mongolian Cyrillic exists (Б.Хандмаа, from
- * the portrait filename) but was not supplied in the list, and a name is not
- * something to lift from a filename.
+ * `native` is the member's name in the member's own script, and in that
+ * language's own order — so all four read family name first, while the Latin
+ * column reads given name first. That is why 今井初実 is Imai Hatsumi and
+ * Батбаяр Хандмаа is Batbayar Khandmaa. Not a mismatch; the convention.
  */
 export const MANAGEMENT = [
   {
@@ -300,6 +300,7 @@ export const MANAGEMENT = [
   },
   {
     name: "Khandmaa Batbayar",
+    native: "Батбаяр Хандмаа",
     role: "BPO Executive Member",
     portrait: "/img/leadership/khandmaa-batbayar.webp",
   },
