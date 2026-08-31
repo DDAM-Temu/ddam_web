@@ -2,10 +2,10 @@ import Link from "next/link";
 import {
   Aura,
   ChapterLabel,
-  ScrollRail,
   TaglineMarquee,
 } from "@/components/narrative";
 import { PosterCarousel } from "@/components/poster-carousel";
+import { ScrollRail } from "@/components/scroll-rail";
 import { ScrollScrubVideo } from "@/components/scroll-video";
 import { CountUp } from "@/components/count-up";
 import { Intro } from "@/components/intro";
@@ -35,7 +35,7 @@ export default function Home() {
       <Intro />
 
       {/* ============ 00 — OPENING SCENE ============ */}
-      <section className="hero grain clip-scope relative flex h-[min(88vh,880px)] min-h-[560px] flex-col justify-center overflow-hidden">
+      <section id="chapter-00" className="hero grain clip-scope relative flex h-[min(88vh,880px)] min-h-[560px] flex-col justify-center overflow-hidden">
         <Aura />
         {/* The office itself, behind the line about it. `.plx` is deliberately
             absent — the footage already moves, and floating it as well gives

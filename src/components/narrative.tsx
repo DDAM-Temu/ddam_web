@@ -37,17 +37,6 @@ export function Aura({ className = "" }: { className?: string }) {
   );
 }
 
-/** Fixed scroll-progress rail. Hidden below 1280px. */
-export function ScrollRail() {
-  return (
-    <div className="rail" aria-hidden="true">
-      <b />
-      <u />
-      <b />
-    </div>
-  );
-}
-
 /** Seamless marquee: the track is rendered twice and translated -50%. */
 export function TaglineMarquee() {
   const items = TAGLINES.map((line) => (

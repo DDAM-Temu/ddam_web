@@ -244,6 +244,12 @@
    pips light up from their own section's view timeline, so the rail
    reads as a table of contents rather than a plain progress bar.      */
 .rail {
+  --rail-bar: 190px;
+  /* Mark to the top of the bar: the bar itself, the gap, the bottom pip, its
+     gap, and the mark's own offset. Derived rather than typed, so moving the
+     bar cannot leave the rocket overshooting or stopping short. */
+  --rail-launch: calc(var(--rail-bar) + 10px + 5px + 10px + 4px);
+
   position: fixed; left: 34px; top: 50%;
   transform: translateY(-50%);
   z-index: 30;
@@ -254,7 +260,7 @@
 .rail b { display: block; width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.22); }
 .rail u {
   position: relative; display: block;
-  width: 1px; height: 190px;
+  width: 1px; height: var(--rail-bar);
   background: rgba(255,255,255,0.12);
   overflow: hidden;
 }
@@ -270,6 +276,116 @@
   }
 }
 @keyframes ddam-railfill { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+/* ---- the rail's way back up -------------------------------------------
+   The mark arrives at the foot of the page and takes you to chapter 00.
+
+   Drawn as a mask over a coloured box rather than as an <img>, the same way
+   the header logo is: every opaque pixel of the source is white, so a mask
+   reproduces it exactly and lets it dim and brighten without a second file.
+
+   Two animations, both on the document's scroll timeline and both ending at
+   97%. The first fades it in. The second exists only to keep it from being an
+   invisible click target for the whole page: `steps(1, end)` holds
+   `pointer-events: none` for the entire range and flips it exactly at the end,
+   so the link is reachable when it is actually there and not a moment before.
+   Without that second animation the fill-mode holds an interactive, invisible
+   box at the bottom of the rail from the top of the document down.         */
+.rail-top {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 28px;
+  margin-top: 4px;
+  pointer-events: none;
+  opacity: 0;
+}
+.rail-mark {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.45);
+  -webkit-mask-image: url("/img/ddam-mark-plain.png");
+          mask-image: url("/img/ddam-mark-plain.png");
+  -webkit-mask-size: contain;
+          mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
+  transition: transform 0.45s cubic-bezier(.16, 1, .3, 1), background-color 0.35s;
+}
+
+/* The exhaust. Absolutely positioned so growing it cannot change the rail's
+   height — the rail is centred on the viewport, so a taller link would shunt
+   the whole thing upward. */
+.rail-trail {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -1px;
+  width: 2px;
+  height: 0;
+  background: linear-gradient(180deg, var(--color-cyan), transparent);
+  opacity: 0;
+  transition: height 0.45s cubic-bezier(.16, 1, .3, 1), opacity 0.35s;
+}
+
+.rail-top:hover .rail-mark,
+.rail-top:focus-visible .rail-mark {
+  background: var(--color-chalk);
+  transform: translateY(-5px);
+}
+.rail-top:hover .rail-trail,
+.rail-top:focus-visible .rail-trail { height: 16px; opacity: 0.8; }
+
+/* ---- the launch ----
+   Ease IN, against the grain of everything else on this site. The house curve
+   is an ease-out, which is right for something arriving and settling; a rocket
+   does the opposite — it hangs, then goes. It travels the length of the bar
+   and burns out at the top, where the blue fill ends.
+
+   The transform is on the anchor so the exhaust travels with the mark; put it
+   on the mark alone and the trail stays behind at the bottom of the rail. */
+.rail-top[data-launch] {
+  animation: ddam-raillaunch 0.72s cubic-bezier(.5, 0, .85, .35) forwards;
+}
+.rail-top[data-launch] .rail-trail {
+  animation: ddam-railtrail 0.72s cubic-bezier(.5, 0, .85, .35) forwards;
+}
+@keyframes ddam-raillaunch {
+  0%   { transform: translateY(0); opacity: 1; }
+  62%  { opacity: 1; }
+  100% { transform: translateY(calc(-1 * var(--rail-launch))); opacity: 0; }
+}
+@keyframes ddam-railtrail {
+  0%   { height: 26px; opacity: 1; }
+  40%  { height: 44px; opacity: 0.95; }
+  100% { height: 10px; opacity: 0; }
+}
+
+@supports (animation-timeline: scroll()) {
+  .rail-top {
+    animation:
+      ddam-railtop linear both,
+      ddam-railtop-hit steps(1, end) both;
+    animation-timeline: scroll(root block), scroll(root block);
+    animation-range: 86% 97%, 86% 97%;
+  }
+  /* The launch has to win over the scroll-driven fade while it runs. */
+  .rail-top[data-launch] {
+    animation: ddam-raillaunch 0.72s cubic-bezier(.5, 0, .85, .35) forwards;
+    animation-timeline: auto;
+  }
+  @keyframes ddam-railtop { to { opacity: 1; } }
+  @keyframes ddam-railtop-hit { from { pointer-events: none; } to { pointer-events: auto; } }
+}
+
+/* No scroll timelines: rather than a link that never appears, show it always.
+   It is a back-to-top at the foot of a fixed rail; it does no harm up top. */
+@supports not (animation-timeline: scroll()) {
+  .rail-top { opacity: 1; pointer-events: auto; }
+}
 
 /* ---- rotating conic field -------------------------------------------
    The artboard animated an @property <angle> inside a conic-gradient,
