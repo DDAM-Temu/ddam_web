@@ -28,42 +28,40 @@ const PROFILE = [
 export default function AboutPage() {
   return (
     <>
+      {/* The vision opens the page rather than sitting in a section under it.
+          There used to be two chapter 01s — this banner and a separate vision
+          section — saying different things. The banner's headline and intro
+          were also both duplicated from the home page's chapter 01, so folding
+          the two together loses nothing and drops a repeat.
+
+          `id="vision"` moves here with the content: the footer links to
+          /about#vision.
+
+          No `.rv` on the commitments. The banner is `overflow-hidden`, which
+          makes it a scroll container and freezes an anonymous view timeline —
+          and a reveal would be pointless on something already on screen. */}
       <PageHeader
+        id="vision"
         number="01"
-        eyebrow="The company"
-        title="Every discipline, in one building."
-        intro="Not a sales office with delivery somewhere else. The engineers, the analysts and the operators are all in the same building in Ulaanbaatar."
-      />
-
-      <section id="vision" className="border-b border-white/10 px-[var(--gutter)] py-24">
-        <div className="mx-auto flex max-w-[1248px] flex-col gap-10">
-          <ChapterLabel number="01" title="Vision, mission and values" />
-
-          <h2 className="rv max-w-[900px] font-display text-[length:var(--text-scene)] leading-[1.04] font-light tracking-[-0.026em] text-balance text-chalk">
-            {VISION.statement}
-          </h2>
-
-          {/* The statement names three audiences, so it is set as three rather
-              than as a paragraph of near-identical clauses. The mono label is
-              lifted out of each clause, not added to it. */}
-          <ul className="rv grid gap-4 sm:grid-cols-3">
-            {VISION.commitments.map((commitment) => (
-              <li
-                key={commitment.audience}
-                className="flex flex-col gap-4 border border-white/10 bg-ink-card px-8 pt-7 pb-8"
-              >
-                <span className="font-mono text-[11px] tracking-[0.18em] text-accent uppercase">
-                  {commitment.audience}
-                </span>
-                <p className="text-[16.5px] leading-[1.68] text-pretty text-paper">
-                  {commitment.clause}
-                </p>
-              </li>
-            ))}
-          </ul>
-
-        </div>
-      </section>
+        eyebrow="Vision, mission and values"
+        title={VISION.statement}
+      >
+        <ul className="grid gap-4 sm:grid-cols-3">
+          {VISION.commitments.map((commitment) => (
+            <li
+              key={commitment.audience}
+              className="flex flex-col gap-4 border border-white/10 bg-ink-card/55 px-8 pt-7 pb-8 backdrop-blur-sm"
+            >
+              <span className="font-mono text-[11px] tracking-[0.18em] text-accent uppercase">
+                {commitment.audience}
+              </span>
+              <p className="text-[16.5px] leading-[1.68] text-pretty text-paper">
+                {commitment.clause}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </PageHeader>
 
       <section id="management" className="border-b border-white/10 px-[var(--gutter)] py-24">
         <div className="mx-auto flex max-w-[1248px] flex-col gap-12">
