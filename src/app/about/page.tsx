@@ -97,12 +97,24 @@ export default function AboutPage() {
                 height={1133}
                 className="w-full max-w-[300px] border border-white/10 object-cover"
               />
-              <figcaption className="flex flex-col gap-1.5">
-                <span className="font-display text-[1.35rem] leading-tight font-light text-chalk">
-                  {PRESIDENT.name}
+              <figcaption className="flex flex-col gap-2">
+                <span className="flex flex-wrap items-baseline gap-x-3">
+                  <span className="font-display text-[1.45rem] leading-tight font-light text-chalk">
+                    {PRESIDENT.name}
+                  </span>
+                  {PRESIDENT.native ? (
+                    <span className="text-[15px] text-dim">{PRESIDENT.native}</span>
+                  ) : null}
                 </span>
-                <span className="font-mono text-[10.5px] tracking-[0.16em] text-accent uppercase">
-                  {PRESIDENT.role}
+                {/* Broken at the comma rather than left to wrap. The role is two
+                    appointments, and letting the line break where it likes
+                    orphaned "Member" onto a line of its own. */}
+                <span className="font-mono text-[10.5px] leading-[1.7] tracking-[0.16em] text-accent uppercase">
+                  {PRESIDENT.role.split(", ").map((part, i, all) => (
+                    <span key={part} className="block">
+                      {i < all.length - 1 ? `${part},` : part}
+                    </span>
+                  ))}
                 </span>
               </figcaption>
             </figure>
@@ -111,7 +123,7 @@ export default function AboutPage() {
               {PRESIDENT.message.map((para) => (
                 <p
                   key={para.slice(0, 40)}
-                  className="max-w-[660px] text-[16.5px] leading-[1.8] text-pretty text-soft"
+                  className="msg-line max-w-[660px] text-[16.5px] leading-[1.8] text-pretty text-soft"
                 >
                   {para}
                 </p>
